@@ -1,0 +1,81 @@
+import { PrismaService } from '../prisma/prisma.service';
+import { CreateQuizDto, UpdateQuizDto } from './quizzes.dto';
+export declare class QuizzesService {
+    private prisma;
+    constructor(prisma: PrismaService);
+    create(data: CreateQuizDto): Promise<{
+        description: string | null;
+        title: string;
+        subject: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        questions: import("@prisma/client/runtime/library").JsonValue;
+        difficulty: string;
+        topic: string | null;
+        lessonId: string | null;
+        quizType: import(".prisma/client").$Enums.QuizType;
+        questionCount: number;
+        passingScore: number;
+    }>;
+    findAll(): Promise<{
+        description: string | null;
+        title: string;
+        subject: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        questions: import("@prisma/client/runtime/library").JsonValue;
+        difficulty: string;
+        topic: string | null;
+        lessonId: string | null;
+        quizType: import(".prisma/client").$Enums.QuizType;
+        questionCount: number;
+        passingScore: number;
+    }[]>;
+    findOne(id: string): Promise<{
+        description: string | null;
+        title: string;
+        subject: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        questions: import("@prisma/client/runtime/library").JsonValue;
+        difficulty: string;
+        topic: string | null;
+        lessonId: string | null;
+        quizType: import(".prisma/client").$Enums.QuizType;
+        questionCount: number;
+        passingScore: number;
+    } | null>;
+    update(id: string, data: UpdateQuizDto): Promise<{
+        description: string | null;
+        title: string;
+        subject: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        questions: import("@prisma/client/runtime/library").JsonValue;
+        difficulty: string;
+        topic: string | null;
+        lessonId: string | null;
+        quizType: import(".prisma/client").$Enums.QuizType;
+        questionCount: number;
+        passingScore: number;
+    }>;
+    remove(id: string): Promise<{
+        description: string | null;
+        title: string;
+        subject: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        questions: import("@prisma/client/runtime/library").JsonValue;
+        difficulty: string;
+        topic: string | null;
+        lessonId: string | null;
+        quizType: import(".prisma/client").$Enums.QuizType;
+        questionCount: number;
+        passingScore: number;
+    }>;
+}
