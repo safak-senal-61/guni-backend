@@ -21,6 +21,7 @@ const user_roles_enum_1 = require("../common/enums/user-roles.enum");
 const parent_panel_service_1 = require("./parent-panel.service");
 const parent_panel_analytics_service_1 = require("./parent-panel.analytics.service");
 const parent_panel_dto_1 = require("./parent-panel.dto");
+const swagger_1 = require("@nestjs/swagger");
 let ParentPanelController = class ParentPanelController {
     parentPanelService;
     analyticsService;
@@ -98,6 +99,12 @@ exports.ParentPanelController = ParentPanelController;
 __decorate([
     (0, common_1.Get)('profile'),
     (0, roles_decorator_1.Roles)(user_roles_enum_1.UserRole.PARENT),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Get parent profile',
+        description: 'Retrieves the parent profile information including connected students.'
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Parent profile retrieved successfully' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized - Invalid or missing authentication token' }),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -106,6 +113,13 @@ __decorate([
 __decorate([
     (0, common_1.Post)('connect-student'),
     (0, roles_decorator_1.Roles)(user_roles_enum_1.UserRole.PARENT),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Request student connection',
+        description: 'Sends a connection request to a student for monitoring their progress.'
+    }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Connection request sent successfully' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request - Invalid student email or connection already exists' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized - Invalid or missing authentication token' }),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -115,6 +129,12 @@ __decorate([
 __decorate([
     (0, common_1.Get)('pending-connections'),
     (0, roles_decorator_1.Roles)(user_roles_enum_1.UserRole.PARENT),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Get pending connections',
+        description: 'Retrieves all pending student connection requests.'
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Pending connections retrieved successfully' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized - Invalid or missing authentication token' }),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -123,6 +143,12 @@ __decorate([
 __decorate([
     (0, common_1.Get)('connected-students'),
     (0, roles_decorator_1.Roles)(user_roles_enum_1.UserRole.PARENT),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Get connected students',
+        description: 'Retrieves all approved student connections.'
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Connected students retrieved successfully' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized - Invalid or missing authentication token' }),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -240,9 +266,11 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ParentPanelController.prototype, "getDashboardStats", null);
 exports.ParentPanelController = ParentPanelController = __decorate([
+    (0, swagger_1.ApiTags)('parent-panel'),
     (0, common_1.Controller)('parent-panel'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)(user_roles_enum_1.UserRole.PARENT),
+    (0, swagger_1.ApiBearerAuth)(),
     __metadata("design:paramtypes", [parent_panel_service_1.ParentPanelService,
         parent_panel_analytics_service_1.ParentPanelAnalyticsService])
 ], ParentPanelController);

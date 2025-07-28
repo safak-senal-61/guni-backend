@@ -20,6 +20,7 @@ const passport_1 = require("@nestjs/passport");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
 const roles_guard_1 = require("../common/guards/roles.guard");
 const user_roles_enum_1 = require("../common/enums/user-roles.enum");
+const swagger_1 = require("@nestjs/swagger");
 let AchievementsController = class AchievementsController {
     achievementsService;
     constructor(achievementsService) {
@@ -56,6 +57,14 @@ __decorate([
     (0, common_1.Post)(),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)(user_roles_enum_1.UserRole.ADMIN),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Create new achievement',
+        description: 'Creates a new achievement. Only ADMIN role can create achievements.'
+    }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Achievement created successfully' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request - Invalid input data' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized - Invalid or missing authentication token' }),
+    (0, swagger_1.ApiResponse)({ status: 403, description: 'Forbidden - Only ADMIN role can create achievements' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [achievements_dto_1.CreateAchievementDto]),
@@ -63,12 +72,24 @@ __decorate([
 ], AchievementsController.prototype, "createAchievement", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Get all achievements',
+        description: 'Retrieves all available achievements in the system.'
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'All achievements retrieved successfully' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized - Invalid or missing authentication token' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AchievementsController.prototype, "getAllAchievements", null);
 __decorate([
     (0, common_1.Get)('my-achievements'),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Get user achievements',
+        description: 'Retrieves all achievements unlocked by the current user.'
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'User achievements retrieved successfully' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized - Invalid or missing authentication token' }),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -99,8 +120,10 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AchievementsController.prototype, "unlockAchievement", null);
 exports.AchievementsController = AchievementsController = __decorate([
+    (0, swagger_1.ApiTags)('achievements'),
     (0, common_1.Controller)('achievements'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, swagger_1.ApiBearerAuth)(),
     __metadata("design:paramtypes", [achievements_service_1.AchievementsService])
 ], AchievementsController);
 //# sourceMappingURL=achievements.controller.js.map

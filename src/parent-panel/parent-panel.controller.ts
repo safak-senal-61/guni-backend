@@ -6,10 +6,13 @@ import { UserRole } from '../common/enums/user-roles.enum';
 import { ParentPanelService } from './parent-panel.service';
 import { ParentPanelAnalyticsService } from './parent-panel.analytics.service';
 import { ConnectStudentDto, SendNotificationDto, GetStudentDetailedProgressDto } from './parent-panel.dto';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiQuery } from '@nestjs/swagger';
 
+@ApiTags('parent-panel')
 @Controller('parent-panel')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Roles(UserRole.PARENT)
+@ApiBearerAuth()
 export class ParentPanelController {
   constructor(
     private readonly parentPanelService: ParentPanelService,
@@ -18,24 +21,49 @@ export class ParentPanelController {
 
   @Get('profile')
   @Roles(UserRole.PARENT)
+  @ApiOperation({
+    summary: 'Get parent profile',
+    description: 'Retrieves the parent profile information including connected students.'
+  })
+  @ApiResponse({ status: 200, description: 'Parent profile retrieved successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing authentication token' })
   async getProfile(@Request() req) {
     return this.parentPanelService.getParentProfile(req.user.id);
   }
 
   @Post('connect-student')
   @Roles(UserRole.PARENT)
+  @ApiOperation({
+    summary: 'Request student connection',
+    description: 'Sends a connection request to a student for monitoring their progress.'
+  })
+  @ApiResponse({ status: 201, description: 'Connection request sent successfully' })
+  @ApiResponse({ status: 400, description: 'Bad request - Invalid student email or connection already exists' })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing authentication token' })
   async connectStudent(@Request() req, @Body() connectDto: ConnectStudentDto) {
     return this.parentPanelService.requestStudentConnection(req.user.id, connectDto);
   }
 
   @Get('pending-connections')
   @Roles(UserRole.PARENT)
+  @ApiOperation({
+    summary: 'Get pending connections',
+    description: 'Retrieves all pending student connection requests.'
+  })
+  @ApiResponse({ status: 200, description: 'Pending connections retrieved successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing authentication token' })
   async getPendingConnections(@Request() req) {
     return this.parentPanelService.getPendingConnections(req.user.id);
   }
 
   @Get('connected-students')
   @Roles(UserRole.PARENT)
+  @ApiOperation({
+    summary: 'Get connected students',
+    description: 'Retrieves all approved student connections.'
+  })
+  @ApiResponse({ status: 200, description: 'Connected students retrieved successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid or missing authentication token' })
   async getConnectedStudents(@Request() req) {
     return this.parentPanelService.getConnectedStudents(req.user.id);
   }
