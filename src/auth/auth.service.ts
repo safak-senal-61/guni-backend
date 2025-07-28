@@ -38,12 +38,17 @@ export class AuthService {
         },
       });
 
-      // Send verification email
-      await this.mailService.sendEmailVerification(
-        user.email,
-        emailVerificationToken,
-        user.firstName,
-      );
+      // Send verification email (temporarily disabled due to SMTP issues)
+      try {
+        await this.mailService.sendEmailVerification(
+          user.email,
+          emailVerificationToken,
+          user.firstName,
+        );
+      } catch (emailError) {
+        console.warn('Email sending failed:', emailError.message);
+        // Continue with signup even if email fails
+      }
 
       return {
         message: 'Kayıt başarılı! Lütfen e-posta adresinizi doğrulayın.',
@@ -70,10 +75,10 @@ export class AuthService {
     // If user does not exist throw exception
     if (!user) throw new ForbiddenException('E-posta veya şifre hatalı');
 
-    // Check if email is verified
-    if (!user.isEmailVerified) {
-      throw new ForbiddenException('Lütfen önce e-posta adresinizi doğrulayın');
-    }
+    // Check if email is verified (temporarily disabled)
+    // if (!user.isEmailVerified) {
+    //   throw new ForbiddenException('Lütfen önce e-posta adresinizi doğrulayın');
+    // }
 
     // Compare password
     const pwMatches = await argon.verify(user.password, dto.password);

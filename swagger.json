@@ -1,0 +1,3119 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/auth/signup": {
+      "post": {
+        "description": "Yeni kullanıcı kaydı oluşturur. Varsayılan rol: STUDENT",
+        "operationId": "AuthController_signup",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Kullanıcı başarıyla oluşturuldu"
+          },
+          "400": {
+            "description": "Hatalı istek - Geçersiz e-posta formatı veya eksik alanlar"
+          },
+          "403": {
+            "description": "E-posta zaten kullanımda"
+          }
+        },
+        "summary": "Yeni kullanıcı oluştur",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/signin": {
+      "post": {
+        "description": "E-posta ve şifre ile kullanıcı girişi yapar. Başarılı girişte access ve refresh token döner.",
+        "operationId": "AuthController_signin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Kullanıcı başarıyla giriş yaptı - Access ve refresh token döndürülür"
+          },
+          "400": {
+            "description": "Hatalı istek - Eksik e-posta veya şifre"
+          },
+          "401": {
+            "description": "Geçersiz kimlik bilgileri - Yanlış e-posta veya şifre"
+          }
+        },
+        "summary": "Kullanıcı girişi",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "description": "Kullanıcının refresh token'ını geçersiz kılar ve çıkış yapar.",
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Kullanıcı başarıyla çıkış yaptı"
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Kullanıcı çıkışı",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "description": "Refresh token kullanarak yeni access token alır.",
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Token başarıyla yenilendi"
+          },
+          "401": {
+            "description": "Geçersiz refresh token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Erişim token'ını yenile",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "description": "Giriş yapmış kullanıcının profil bilgilerini döndürür.",
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Kullanıcı bilgileri döndürüldü"
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Mevcut kullanıcıyı getir",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/verify-email": {
+      "post": {
+        "operationId": "AuthController_verifyEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email verified successfully"
+          },
+          "400": {
+            "description": "Invalid or expired verification token"
+          }
+        },
+        "summary": "Verify email address",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/resend-verification": {
+      "post": {
+        "operationId": "AuthController_resendVerification",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendVerificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verification email sent"
+          },
+          "400": {
+            "description": "Email already verified"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Resend email verification",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "operationId": "AuthController_forgotPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset email sent if user exists"
+          }
+        },
+        "summary": "Request password reset",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "operationId": "AuthController_resetPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successfully"
+          },
+          "400": {
+            "description": "Invalid or expired reset token"
+          }
+        },
+        "summary": "Reset password with token",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/change-password": {
+      "post": {
+        "operationId": "AuthController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password changed successfully"
+          },
+          "400": {
+            "description": "Current password is incorrect"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Change password for authenticated user",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/content-analysis/summarize": {
+      "post": {
+        "description": "Sadece ADMIN ve TEACHER rolleri AI ile içerik özetleyebilir.",
+        "operationId": "ContentAnalysisController_summarize",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SummarizeContentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "İçerik başarıyla özetlendi"
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          },
+          "403": {
+            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri erişebilir."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "AI kullanarak içerik özetleme",
+        "tags": [
+          "content-analysis"
+        ]
+      }
+    },
+    "/content-analysis/summarize-file": {
+      "post": {
+        "description": "Sadece ADMIN ve TEACHER rolleri AI ile dosya içeriğini özetleyebilir.",
+        "operationId": "ContentAnalysisController_summarizeFile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SummarizeFileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Dosya içeriği başarıyla özetlendi"
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          },
+          "403": {
+            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri erişebilir."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "AI kullanarak dosya içeriğini özetleme",
+        "tags": [
+          "content-analysis"
+        ]
+      }
+    },
+    "/content-analysis/generate-quiz-questions": {
+      "post": {
+        "description": "Sadece ADMIN ve TEACHER rolleri LangGraph workflow kullanarak AI ile quiz soruları oluşturabilir. Gemini 2.0 Flash modeli ile güçlendirilmiştir.",
+        "operationId": "ContentAnalysisController_generateQuizQuestions",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateQuizQuestionsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Quiz soruları başarıyla oluşturuldu"
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          },
+          "403": {
+            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri erişebilir."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "LangGraph ile gelişmiş quiz soruları oluşturma",
+        "tags": [
+          "content-analysis"
+        ]
+      }
+    },
+    "/content-analysis/analyze-workflow": {
+      "post": {
+        "description": "Sadece ADMIN ve TEACHER rolleri LangGraph workflow kullanarak kapsamlı içerik analizi yapabilir. Gemini 2.0 Flash modeli ile çoklu adımlı analiz sunar.",
+        "operationId": "ContentAnalysisController_analyzeContentWithWorkflow",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyzeContentWorkflowDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "İçerik analizi başarıyla tamamlandı"
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          },
+          "403": {
+            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri erişebilir."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "LangGraph workflow ile gelişmiş içerik analizi",
+        "tags": [
+          "content-analysis"
+        ]
+      }
+    },
+    "/lessons": {
+      "post": {
+        "description": "Sadece ADMIN ve TEACHER rolleri ders oluşturabilir.",
+        "operationId": "LessonsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLessonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ders başarıyla oluşturuldu."
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          },
+          "403": {
+            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri ders oluşturabilir."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Yeni bir ders oluştur",
+        "tags": [
+          "lessons"
+        ]
+      },
+      "get": {
+        "description": "ADMIN, TEACHER ve STUDENT rolleri dersleri görüntüleyebilir.",
+        "operationId": "LessonsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Tüm dersleri döndürür."
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Tüm dersleri getir",
+        "tags": [
+          "lessons"
+        ]
+      }
+    },
+    "/lessons/{id}": {
+      "get": {
+        "description": "ADMIN, TEACHER ve STUDENT rolleri ders detaylarını görüntüleyebilir.",
+        "operationId": "LessonsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tek bir ders döndürür."
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          },
+          "404": {
+            "description": "Ders bulunamadı."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "ID ile ders getir",
+        "tags": [
+          "lessons"
+        ]
+      },
+      "patch": {
+        "description": "Sadece ADMIN ve TEACHER rolleri ders güncelleyebilir.",
+        "operationId": "LessonsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLessonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ders başarıyla güncellendi."
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          },
+          "403": {
+            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri ders güncelleyebilir."
+          },
+          "404": {
+            "description": "Ders bulunamadı."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "ID ile ders güncelle",
+        "tags": [
+          "lessons"
+        ]
+      },
+      "delete": {
+        "description": "Sadece ADMIN ve TEACHER rolleri ders silebilir.",
+        "operationId": "LessonsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Ders başarıyla silindi."
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          },
+          "403": {
+            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri ders silebilir."
+          },
+          "404": {
+            "description": "Ders bulunamadı."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "ID ile ders sil",
+        "tags": [
+          "lessons"
+        ]
+      }
+    },
+    "/quizzes": {
+      "post": {
+        "description": "Sadece ADMIN ve TEACHER rolleri quiz oluşturabilir.",
+        "operationId": "QuizzesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuizDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Quiz başarıyla oluşturuldu."
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          },
+          "403": {
+            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri quiz oluşturabilir."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Yeni bir quiz oluştur",
+        "tags": [
+          "quizzes"
+        ]
+      },
+      "get": {
+        "description": "ADMIN, TEACHER ve STUDENT rolleri quizleri görüntüleyebilir.",
+        "operationId": "QuizzesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Tüm quizleri döndürür."
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Tüm quizleri getir",
+        "tags": [
+          "quizzes"
+        ]
+      }
+    },
+    "/quizzes/{id}": {
+      "get": {
+        "description": "ADMIN, TEACHER ve STUDENT rolleri quiz detaylarını görüntüleyebilir.",
+        "operationId": "QuizzesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tek bir quiz döndürür."
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          },
+          "404": {
+            "description": "Quiz bulunamadı."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "ID ile quiz getir",
+        "tags": [
+          "quizzes"
+        ]
+      },
+      "patch": {
+        "description": "Sadece ADMIN ve TEACHER rolleri quiz güncelleyebilir.",
+        "operationId": "QuizzesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuizDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Quiz başarıyla güncellendi."
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          },
+          "403": {
+            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri quiz güncelleyebilir."
+          },
+          "404": {
+            "description": "Quiz bulunamadı."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "ID ile quiz güncelle",
+        "tags": [
+          "quizzes"
+        ]
+      },
+      "delete": {
+        "description": "Sadece ADMIN ve TEACHER rolleri quiz silebilir.",
+        "operationId": "QuizzesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Quiz başarıyla silindi."
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          },
+          "403": {
+            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri quiz silebilir."
+          },
+          "404": {
+            "description": "Quiz bulunamadı."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "ID ile quiz sil",
+        "tags": [
+          "quizzes"
+        ]
+      }
+    },
+    "/uploads/file": {
+      "post": {
+        "description": "Sadece ADMIN ve TEACHER rolleri dosya yükleyebilir. Maksimum dosya boyutu: 10MB",
+        "operationId": "UploadsController_uploadFile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Dosya başarıyla yüklendi"
+          },
+          "400": {
+            "description": "Hatalı istek - Dosya boyutu çok büyük veya desteklenmeyen format"
+          },
+          "401": {
+            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          },
+          "403": {
+            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri dosya yükleyebilir."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Tek dosya yükleme",
+        "tags": [
+          "uploads"
+        ]
+      }
+    },
+    "/student-panel/dashboard": {
+      "get": {
+        "operationId": "StudentPanelController_getDashboard",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "StudentPanel"
+        ]
+      }
+    },
+    "/student-panel/progress": {
+      "get": {
+        "operationId": "StudentPanelController_getProgress",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "StudentPanel"
+        ]
+      }
+    },
+    "/student-panel/stats": {
+      "get": {
+        "operationId": "StudentPanelController_getStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "StudentPanel"
+        ]
+      }
+    },
+    "/student-panel/upcoming-lessons": {
+      "get": {
+        "operationId": "StudentPanelController_getUpcomingLessons",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "StudentPanel"
+        ]
+      }
+    },
+    "/student-panel/recommended-quizzes": {
+      "get": {
+        "operationId": "StudentPanelController_getRecommendedQuizzes",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "StudentPanel"
+        ]
+      }
+    },
+    "/student-panel/recent-quiz-results": {
+      "get": {
+        "operationId": "StudentPanelController_getRecentQuizResults",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "StudentPanel"
+        ]
+      }
+    },
+    "/achievements": {
+      "post": {
+        "description": "Creates a new achievement. Only ADMIN role can create achievements.",
+        "operationId": "AchievementsController_createAchievement",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAchievementDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Achievement created successfully"
+          },
+          "400": {
+            "description": "Bad request - Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "403": {
+            "description": "Forbidden - Only ADMIN role can create achievements"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create new achievement",
+        "tags": [
+          "achievements"
+        ]
+      },
+      "get": {
+        "description": "Retrieves all available achievements in the system.",
+        "operationId": "AchievementsController_getAllAchievements",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "All achievements retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all achievements",
+        "tags": [
+          "achievements"
+        ]
+      }
+    },
+    "/achievements/my-achievements": {
+      "get": {
+        "description": "Retrieves all achievements unlocked by the current user.",
+        "operationId": "AchievementsController_getUserAchievements",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User achievements retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get user achievements",
+        "tags": [
+          "achievements"
+        ]
+      }
+    },
+    "/achievements/check-unlocks": {
+      "post": {
+        "operationId": "AchievementsController_checkAndUnlockAchievements",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "achievements"
+        ]
+      }
+    },
+    "/achievements/leaderboard": {
+      "get": {
+        "operationId": "AchievementsController_getLeaderboard",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "achievements"
+        ]
+      }
+    },
+    "/achievements/unlock/{achievementId}": {
+      "post": {
+        "operationId": "AchievementsController_unlockAchievement",
+        "parameters": [
+          {
+            "name": "achievementId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "achievements"
+        ]
+      }
+    },
+    "/notifications": {
+      "post": {
+        "operationId": "NotificationsController_createNotification",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNotificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notifications"
+        ]
+      },
+      "get": {
+        "operationId": "NotificationsController_getUserNotifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/unread-count": {
+      "get": {
+        "operationId": "NotificationsController_getUnreadCount",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/{id}/read": {
+      "patch": {
+        "operationId": "NotificationsController_markAsRead",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/mark-all-read": {
+      "patch": {
+        "operationId": "NotificationsController_markAllAsRead",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/{id}": {
+      "delete": {
+        "operationId": "NotificationsController_deleteNotification",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/parent-panel/profile": {
+      "get": {
+        "description": "Retrieves the parent profile information including connected students.",
+        "operationId": "ParentPanelController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Parent profile retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get parent profile",
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/connect-student": {
+      "post": {
+        "description": "Sends a connection request to a student for monitoring their progress.",
+        "operationId": "ParentPanelController_connectStudent",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConnectStudentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Connection request sent successfully"
+          },
+          "400": {
+            "description": "Bad request - Invalid student email or connection already exists"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Request student connection",
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/pending-connections": {
+      "get": {
+        "description": "Retrieves all pending student connection requests.",
+        "operationId": "ParentPanelController_getPendingConnections",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Pending connections retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get pending connections",
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/connected-students": {
+      "get": {
+        "description": "Retrieves all approved student connections.",
+        "operationId": "ParentPanelController_getConnectedStudents",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Connected students retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get connected students",
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/student-progress/{studentId}": {
+      "get": {
+        "operationId": "ParentPanelController_getStudentDetailedProgress",
+        "parameters": [
+          {
+            "name": "studentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subject",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/student-analytics/{studentId}": {
+      "get": {
+        "operationId": "ParentPanelController_getStudentAnalytics",
+        "parameters": [
+          {
+            "name": "studentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/send-message": {
+      "post": {
+        "operationId": "ParentPanelController_sendMessageToStudent",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/dashboard-summary": {
+      "get": {
+        "operationId": "ParentPanelController_getDashboardSummary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/student-schedule/{studentId}": {
+      "get": {
+        "operationId": "ParentPanelController_getStudentSchedule",
+        "parameters": [
+          {
+            "name": "studentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/set-study-goals": {
+      "post": {
+        "operationId": "ParentPanelController_setStudyGoals",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/send-notification": {
+      "post": {
+        "operationId": "ParentPanelController_sendNotification",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendNotificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/notifications": {
+      "get": {
+        "operationId": "ParentPanelController_getNotifications",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/notifications/{notificationId}/read": {
+      "put": {
+        "operationId": "ParentPanelController_markNotificationAsRead",
+        "parameters": [
+          {
+            "name": "notificationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/weekly-summary/{studentId}": {
+      "post": {
+        "operationId": "ParentPanelController_generateWeeklySummary",
+        "parameters": [
+          {
+            "name": "studentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/student-summary/{studentId}": {
+      "get": {
+        "operationId": "ParentPanelController_getStudentProgressSummary",
+        "parameters": [
+          {
+            "name": "studentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "period",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/parent-panel/dashboard-stats": {
+      "get": {
+        "operationId": "ParentPanelController_getDashboardStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "parent-panel"
+        ]
+      }
+    },
+    "/user-onboarding/profile": {
+      "put": {
+        "description": "Updates user profile information including age, gender, grade level, learning preferences, and weak subjects.",
+        "operationId": "UserOnboardingController_updateProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User profile updated successfully"
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update user profile for onboarding",
+        "tags": [
+          "User Onboarding & Personalization"
+        ]
+      }
+    },
+    "/user-onboarding/quiz/generate": {
+      "post": {
+        "description": "Generates a personalized assessment quiz using LangGraph and Gemini 2.0 Flash to identify user's weak subjects and learning needs.",
+        "operationId": "UserOnboardingController_generateOnboardingQuiz",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OnboardingQuizDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Onboarding quiz generated successfully using AI"
+          },
+          "400": {
+            "description": "Bad Request - Invalid quiz parameters"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Generate personalized onboarding quiz with AI",
+        "tags": [
+          "User Onboarding & Personalization"
+        ]
+      }
+    },
+    "/user-onboarding/quiz/submit": {
+      "post": {
+        "description": "Submits quiz answers and uses LangGraph with Gemini 2.0 Flash to analyze results, identify weak subjects, and generate personalized recommendations.",
+        "operationId": "UserOnboardingController_submitOnboardingQuiz",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitOnboardingQuizDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Quiz answers analyzed successfully with AI-powered insights"
+          },
+          "400": {
+            "description": "Bad Request - Invalid quiz answers"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Submit onboarding quiz answers for AI analysis",
+        "tags": [
+          "User Onboarding & Personalization"
+        ]
+      }
+    },
+    "/user-onboarding/homepage/personalized": {
+      "post": {
+        "description": "Creates a personalized homepage using LangGraph and Gemini 2.0 Flash based on user's weak subjects, learning style, progress, and preferences.",
+        "operationId": "UserOnboardingController_generatePersonalizedHomepage",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonalizedHomepageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Personalized homepage generated successfully with AI-powered content"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Generate personalized homepage with AI recommendations",
+        "tags": [
+          "User Onboarding & Personalization"
+        ]
+      },
+      "get": {
+        "description": "Retrieves personalized homepage content using AI with default recommendation settings.",
+        "operationId": "UserOnboardingController_getPersonalizedHomepage",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Personalized homepage retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get personalized homepage with default settings",
+        "tags": [
+          "User Onboarding & Personalization"
+        ]
+      }
+    },
+    "/user-onboarding/profile/{userId}": {
+      "get": {
+        "description": "Retrieves user profile information for administrative purposes.",
+        "operationId": "UserOnboardingController_getUserProfile",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "User ID to retrieve profile for",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get user profile by ID (Admin/Teacher only)",
+        "tags": [
+          "User Onboarding & Personalization"
+        ]
+      }
+    },
+    "/user-onboarding/recommendations/refresh": {
+      "post": {
+        "description": "Regenerates personalized recommendations using latest user progress and AI analysis with LangGraph and Gemini 2.0 Flash.",
+        "operationId": "UserOnboardingController_refreshRecommendations",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Recommendations refreshed successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Refresh AI-powered recommendations",
+        "tags": [
+          "User Onboarding & Personalization"
+        ]
+      }
+    },
+    "/user-onboarding/analytics/weak-subjects": {
+      "get": {
+        "description": "Provides detailed analysis of user's weak subjects with AI-generated improvement strategies.",
+        "operationId": "UserOnboardingController_getWeakSubjectsAnalysis",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Weak subjects analysis retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get detailed weak subjects analysis",
+        "tags": [
+          "User Onboarding & Personalization"
+        ]
+      }
+    },
+    "/user-onboarding/parent-requests": {
+      "get": {
+        "description": "Retrieves all pending parent connection requests for the student.",
+        "operationId": "UserOnboardingController_getParentRequests",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Parent connection requests retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get pending parent connection requests",
+        "tags": [
+          "User Onboarding & Personalization"
+        ]
+      }
+    },
+    "/user-onboarding/parent-requests/{connectionId}/approve": {
+      "put": {
+        "description": "Approves a parent connection request, allowing the parent to monitor student progress.",
+        "operationId": "UserOnboardingController_approveParentRequest",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "required": true,
+            "in": "path",
+            "description": "Connection request ID to approve",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Parent connection request approved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "Connection request not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Approve parent connection request",
+        "tags": [
+          "User Onboarding & Personalization"
+        ]
+      }
+    },
+    "/user-onboarding/parent-requests/{connectionId}/reject": {
+      "put": {
+        "description": "Rejects a parent connection request.",
+        "operationId": "UserOnboardingController_rejectParentRequest",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "required": true,
+            "in": "path",
+            "description": "Connection request ID to reject",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Parent connection request rejected successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          },
+          "404": {
+            "description": "Connection request not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reject parent connection request",
+        "tags": [
+          "User Onboarding & Personalization"
+        ]
+      }
+    },
+    "/user-onboarding/connected-parents": {
+      "get": {
+        "description": "Retrieves all approved parent connections for the student.",
+        "operationId": "UserOnboardingController_getConnectedParents",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Connected parents retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get connected parents",
+        "tags": [
+          "User Onboarding & Personalization"
+        ]
+      }
+    },
+    "/messages": {
+      "post": {
+        "operationId": "MessagesController_sendMessage",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMessageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Messages"
+        ]
+      }
+    },
+    "/messages/conversations": {
+      "get": {
+        "operationId": "MessagesController_getUserConversations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Messages"
+        ]
+      }
+    },
+    "/messages/conversation/{userId}": {
+      "get": {
+        "operationId": "MessagesController_getConversation",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Messages"
+        ]
+      }
+    },
+    "/messages/unread-count": {
+      "get": {
+        "operationId": "MessagesController_getUnreadMessageCount",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Messages"
+        ]
+      }
+    },
+    "/messages/mark-read/{senderId}": {
+      "post": {
+        "operationId": "MessagesController_markMessagesAsRead",
+        "parameters": [
+          {
+            "name": "senderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Messages"
+        ]
+      }
+    },
+    "/messages/{messageId}": {
+      "delete": {
+        "operationId": "MessagesController_deleteMessage",
+        "parameters": [
+          {
+            "name": "messageId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Messages"
+        ]
+      }
+    },
+    "/analytics/overview": {
+      "get": {
+        "operationId": "AnalyticsController_getOverview",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/analytics/engagement": {
+      "get": {
+        "operationId": "AnalyticsController_getUserEngagement",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/analytics/learning-progress": {
+      "get": {
+        "operationId": "AnalyticsController_getLearningProgress",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/analytics/content": {
+      "get": {
+        "operationId": "AnalyticsController_getContentAnalytics",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/analytics/timeline": {
+      "get": {
+        "operationId": "AnalyticsController_getActivityTimeline",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/analytics/parent-engagement": {
+      "get": {
+        "operationId": "AnalyticsController_getParentEngagement",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/analytics/achievements": {
+      "get": {
+        "operationId": "AnalyticsController_getAchievementStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/analytics/top-performers": {
+      "get": {
+        "operationId": "AnalyticsController_getTopPerformers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/analytics/popular-content": {
+      "get": {
+        "operationId": "AnalyticsController_getPopularContent",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Analytics"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "🎓 GÜNÜBİRLİK DOZ API",
+    "description": "\n      <div style=\"text-align: center; margin: 20px 0;\">\n        <h2>🚀 AI Destekli Eğitim Platformu API'si</h2>\n        <p><strong>GÜNÜBİRLİK DOZ</strong> - Yapay zeka teknolojileri ile desteklenen modern eğitim yönetim sistemi</p>\n      </div>\n      \n      <h3>🌟 Özellikler</h3>\n      <ul>\n        <li>🤖 <strong>AI Destekli İçerik Analizi:</strong> Google Gemini 2.0 Flash ile otomatik özetleme</li>\n        <li>🧠 <strong>Akıllı Quiz Sistemi:</strong> LangGraph ile otomatik soru oluşturma</li>\n        <li>👨‍🎓 <strong>Kişiselleştirilmiş Öğrenme:</strong> LangChain ile özel öneriler</li>\n        <li>🔐 <strong>Güvenli Kimlik Doğrulama:</strong> JWT Bearer Token sistemi</li>\n        <li>👥 <strong>Rol Bazlı Erişim:</strong> Öğrenci, Öğretmen, Veli ve Admin rolleri</li>\n        <li>📊 <strong>Gelişmiş Analitik:</strong> Detaylı performans raporları</li>\n        <li>📧 <strong>E-posta Entegrasyonu:</strong> Otomatik bildirimler</li>\n        <li>📁 <strong>Dosya Yönetimi:</strong> Güvenli dosya yükleme ve paylaşım</li>\n      </ul>\n      \n      <h3>🛠️ Teknoloji Yığını</h3>\n      <p><code>NestJS</code> • <code>TypeScript</code> • <code>PostgreSQL</code> • <code>Prisma ORM</code> • <code>Google AI</code> • <code>LangChain</code> • <code>LangGraph</code></p>\n      \n      <h3>📚 Kullanım Rehberi</h3>\n      <ol>\n        <li><strong>Kimlik Doğrulama:</strong> <code>/auth/signin</code> endpoint'i ile giriş yapın</li>\n        <li><strong>Token Kullanımı:</strong> Bearer token'ı Authorization header'ında gönderin</li>\n        <li><strong>Rol Kontrolü:</strong> Endpoint'lerin gerektirdiği rolleri kontrol edin</li>\n        <li><strong>API Testi:</strong> Aşağıdaki \"Try it out\" butonlarını kullanın</li>\n      </ol>\n      \n      <div style=\"background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0;\">\n        <h4>📥 JSON Export</h4>\n        <p>API dokümantasyonunu JSON formatında indirmek için: <a href=\"/api-json\" target=\"_blank\"><strong>Swagger JSON İndir</strong></a></p>\n      </div>\n    ",
+    "version": "2.0.0",
+    "contact": {
+      "name": "GÜNÜBİRLİK DOZ Geliştirici Ekibi",
+      "url": "https://github.com/gunibirlikdoz",
+      "email": "info@gunibirlikdoz.com"
+    },
+    "license": {
+      "name": "MIT License",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "tags": [
+    {
+      "name": "🔐 Auth",
+      "description": "Kimlik doğrulama ve yetkilendirme işlemleri"
+    },
+    {
+      "name": "📊 Content Analysis",
+      "description": "AI destekli içerik analizi ve özetleme"
+    },
+    {
+      "name": "🎯 User Onboarding",
+      "description": "Kullanıcı adaptasyonu ve kişiselleştirme"
+    },
+    {
+      "name": "📚 Lessons",
+      "description": "Ders yönetimi ve içerik organizasyonu"
+    },
+    {
+      "name": "❓ Quizzes",
+      "description": "Quiz oluşturma ve değerlendirme sistemi"
+    },
+    {
+      "name": "👨‍🎓 Student Panel",
+      "description": "Öğrenci dashboard ve özellikler"
+    },
+    {
+      "name": "👨‍👩‍👧‍👦 Parent Panel",
+      "description": "Veli takip ve raporlama sistemi"
+    },
+    {
+      "name": "🏆 Achievements",
+      "description": "Başarı rozetleri ve ödül sistemi"
+    },
+    {
+      "name": "💬 Messages",
+      "description": "Mesajlaşma ve iletişim sistemi"
+    },
+    {
+      "name": "🔔 Notifications",
+      "description": "Bildirim yönetimi"
+    },
+    {
+      "name": "📁 Uploads",
+      "description": "Dosya yükleme ve yönetimi"
+    },
+    {
+      "name": "📈 Analytics",
+      "description": "Performans analizi ve raporlama"
+    }
+  ],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "JWT-auth": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "name": "JWT",
+        "description": "JWT Bearer token ile kimlik doğrulama",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "SignupDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "test@example.com",
+            "description": "User email"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123",
+            "description": "User password"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John",
+            "description": "User first name"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe",
+            "description": "User last name"
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "firstName",
+          "lastName"
+        ]
+      },
+      "AuthDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "test@example.com",
+            "description": "User email"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123",
+            "description": "User password"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "VerifyEmailDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "abc123def456",
+            "description": "Email verification token"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
+      "ResendVerificationDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "test@example.com",
+            "description": "User email"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ForgotPasswordDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "test@example.com",
+            "description": "User email"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ResetPasswordDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "abc123def456",
+            "description": "Password reset token"
+          },
+          "newPassword": {
+            "type": "string",
+            "example": "newpassword123",
+            "description": "New password"
+          }
+        },
+        "required": [
+          "token",
+          "newPassword"
+        ]
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string",
+            "example": "oldpassword123",
+            "description": "Current password"
+          },
+          "newPassword": {
+            "type": "string",
+            "example": "newpassword123",
+            "description": "New password"
+          }
+        },
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ]
+      },
+      "SummarizeContentDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Text content to summarize"
+          },
+          "videoUrl": {
+            "type": "string",
+            "description": "URL of the video (optional)"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the content (optional)"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "SummarizeFileDto": {
+        "type": "object",
+        "properties": {
+          "filePath": {
+            "type": "string",
+            "description": "Path to the file to summarize"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the content (optional)"
+          }
+        },
+        "required": [
+          "filePath"
+        ]
+      },
+      "GenerateQuizQuestionsDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Text content to generate questions from"
+          },
+          "numberOfQuestions": {
+            "type": "number",
+            "description": "Number of questions to generate",
+            "default": 5
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "AnalyzeContentWorkflowDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Text content to analyze with LangGraph workflow"
+          },
+          "analysisType": {
+            "type": "string",
+            "description": "Type of analysis to perform",
+            "enum": [
+              "summary",
+              "detailed",
+              "educational"
+            ],
+            "default": "summary"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "CreateLessonDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the lesson"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the lesson"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Subject of the lesson"
+          },
+          "topic": {
+            "type": "string",
+            "description": "Topic of the lesson"
+          },
+          "difficulty": {
+            "type": "string",
+            "description": "Difficulty level of the lesson"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "LESSON",
+              "VIDEO",
+              "QUIZ",
+              "EXERCISE",
+              "INTERACTIVE"
+            ],
+            "description": "Type of content (e.g., LESSON, VIDEO, QUIZ)"
+          },
+          "duration": {
+            "type": "number",
+            "description": "Duration of the lesson in minutes"
+          },
+          "thumbnail": {
+            "type": "string",
+            "description": "Thumbnail URL"
+          },
+          "tags": {
+            "description": "Tags for the lesson",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "prerequisites": {
+            "description": "Prerequisites for the lesson",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "learningObjectives": {
+            "description": "Learning objectives of the lesson",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "subject",
+          "difficulty",
+          "type"
+        ]
+      },
+      "UpdateLessonDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the lesson"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the lesson"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Subject of the lesson"
+          },
+          "topic": {
+            "type": "string",
+            "description": "Topic of the lesson"
+          },
+          "difficulty": {
+            "type": "string",
+            "description": "Difficulty level of the lesson"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "LESSON",
+              "VIDEO",
+              "QUIZ",
+              "EXERCISE",
+              "INTERACTIVE"
+            ],
+            "description": "Type of content (e.g., LESSON, VIDEO, QUIZ)"
+          },
+          "duration": {
+            "type": "number",
+            "description": "Duration of the lesson in minutes"
+          },
+          "thumbnail": {
+            "type": "string",
+            "description": "Thumbnail URL"
+          },
+          "tags": {
+            "description": "Tags for the lesson",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "prerequisites": {
+            "description": "Prerequisites for the lesson",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "learningObjectives": {
+            "description": "Learning objectives of the lesson",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateQuizDto": {
+        "type": "object",
+        "properties": {
+          "lessonId": {
+            "type": "string",
+            "description": "ID of the lesson this quiz belongs to (optional)"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the quiz"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the quiz"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Subject of the quiz"
+          },
+          "topic": {
+            "type": "string",
+            "description": "Topic of the quiz"
+          },
+          "difficulty": {
+            "type": "string",
+            "description": "Difficulty level of the quiz"
+          },
+          "quizType": {
+            "type": "string",
+            "enum": [
+              "MULTIPLE_CHOICE",
+              "OPEN_ENDED",
+              "DRAG_DROP"
+            ],
+            "description": "Type of quiz (e.g., MULTIPLE_CHOICE, OPEN_ENDED)"
+          },
+          "questionCount": {
+            "type": "number",
+            "description": "Number of questions in the quiz"
+          },
+          "passingScore": {
+            "type": "number",
+            "description": "Passing score for the quiz (percentage)"
+          },
+          "questions": {
+            "type": "object",
+            "description": "JSON array of question objects"
+          }
+        },
+        "required": [
+          "title",
+          "subject",
+          "difficulty",
+          "quizType",
+          "questionCount",
+          "passingScore",
+          "questions"
+        ]
+      },
+      "UpdateQuizDto": {
+        "type": "object",
+        "properties": {
+          "lessonId": {
+            "type": "string",
+            "description": "ID of the lesson this quiz belongs to (optional)"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the quiz"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the quiz"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Subject of the quiz"
+          },
+          "topic": {
+            "type": "string",
+            "description": "Topic of the quiz"
+          },
+          "difficulty": {
+            "type": "string",
+            "description": "Difficulty level of the quiz"
+          },
+          "quizType": {
+            "type": "string",
+            "enum": [
+              "MULTIPLE_CHOICE",
+              "OPEN_ENDED",
+              "DRAG_DROP"
+            ],
+            "description": "Type of quiz (e.g., MULTIPLE_CHOICE, OPEN_ENDED)"
+          },
+          "questionCount": {
+            "type": "number",
+            "description": "Number of questions in the quiz"
+          },
+          "passingScore": {
+            "type": "number",
+            "description": "Passing score for the quiz (percentage)"
+          },
+          "questions": {
+            "type": "object",
+            "description": "JSON array of question objects"
+          }
+        }
+      },
+      "CreateAchievementDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the achievement",
+            "example": "Quiz Master"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the achievement",
+            "example": "Complete 10 quizzes with 80% or higher score"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of the achievement",
+            "enum": [
+              "PROGRESS",
+              "SUBJECT_MASTERY",
+              "SOCIAL",
+              "GAMIFICATION",
+              "SPECIAL"
+            ]
+          },
+          "points": {
+            "type": "number",
+            "description": "Points awarded for this achievement",
+            "example": 100,
+            "minimum": 1
+          },
+          "icon": {
+            "type": "string",
+            "description": "Icon identifier for the achievement",
+            "example": "trophy-icon"
+          },
+          "requirement": {
+            "type": "number",
+            "description": "Requirement value to unlock this achievement",
+            "example": 10,
+            "minimum": 1
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "category",
+          "points",
+          "requirement"
+        ]
+      },
+      "CreateNotificationDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "ConnectStudentDto": {
+        "type": "object",
+        "properties": {
+          "studentEmail": {
+            "type": "string",
+            "description": "Öğrencinin email adresi",
+            "example": "student@example.com"
+          },
+          "inviteCode": {
+            "type": "string",
+            "description": "Bağlantı için özel davet kodu",
+            "example": "ABC123"
+          }
+        },
+        "required": [
+          "studentEmail"
+        ]
+      },
+      "SendNotificationDto": {
+        "type": "object",
+        "properties": {
+          "receiverId": {
+            "type": "string",
+            "description": "Alıcı ID'si",
+            "example": "uuid-string"
+          },
+          "title": {
+            "type": "string",
+            "description": "Bildirim başlığı",
+            "example": "Tebrikler!"
+          },
+          "message": {
+            "type": "string",
+            "description": "Bildirim mesajı",
+            "example": "Matematik quizinde harika bir performans sergiledi!"
+          },
+          "type": {
+            "type": "string",
+            "description": "Bildirim tipi",
+            "example": "achievement",
+            "enum": [
+              "achievement",
+              "progress",
+              "quiz_completed",
+              "lesson_completed",
+              "parent_request",
+              "encouragement"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "description": "Ek veri (JSON format)",
+            "example": {
+              "quizScore": 95,
+              "subject": "Mathematics"
+            }
+          }
+        },
+        "required": [
+          "receiverId",
+          "title",
+          "message",
+          "type"
+        ]
+      },
+      "UpdateUserProfileDto": {
+        "type": "object",
+        "properties": {
+          "age": {
+            "type": "number",
+            "description": "User age"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "PREFER_NOT_TO_SAY"
+            ],
+            "description": "User gender"
+          },
+          "gradeLevel": {
+            "type": "string",
+            "enum": [
+              "GRADE_1",
+              "GRADE_2",
+              "GRADE_3",
+              "GRADE_4",
+              "GRADE_5",
+              "GRADE_6",
+              "GRADE_7",
+              "GRADE_8",
+              "GRADE_9",
+              "GRADE_10",
+              "GRADE_11",
+              "GRADE_12"
+            ],
+            "description": "User grade level"
+          },
+          "learningStyle": {
+            "type": "string",
+            "enum": [
+              "VISUAL",
+              "AUDITORY",
+              "KINESTHETIC",
+              "READ_WRITE"
+            ],
+            "description": "Preferred learning style"
+          },
+          "interests": {
+            "description": "User interests",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "goals": {
+            "description": "Learning goals",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "studyHours": {
+            "type": "number",
+            "description": "Preferred daily study hours"
+          },
+          "difficultyPreference": {
+            "type": "string",
+            "description": "Difficulty preference"
+          },
+          "weakSubjects": {
+            "description": "Known weak subjects",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "OnboardingQuizDto": {
+        "type": "object",
+        "properties": {
+          "subjects": {
+            "description": "Subjects to assess",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "questionsPerSubject": {
+            "type": "number",
+            "description": "Number of questions per subject"
+          }
+        },
+        "required": [
+          "subjects"
+        ]
+      },
+      "OnboardingQuizAnswerDto": {
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "string",
+            "description": "Quiz question ID"
+          },
+          "answer": {
+            "type": "string",
+            "description": "User answer"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Subject of the question"
+          }
+        },
+        "required": [
+          "questionId",
+          "answer",
+          "subject"
+        ]
+      },
+      "SubmitOnboardingQuizDto": {
+        "type": "object",
+        "properties": {
+          "answers": {
+            "description": "Quiz answers",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OnboardingQuizAnswerDto"
+            }
+          }
+        },
+        "required": [
+          "answers"
+        ]
+      },
+      "PersonalizedHomepageDto": {
+        "type": "object",
+        "properties": {
+          "lessonCount": {
+            "type": "number",
+            "description": "Number of recommended lessons"
+          },
+          "includeQuizzes": {
+            "type": "boolean",
+            "description": "Include quiz recommendations"
+          },
+          "includeProgress": {
+            "type": "boolean",
+            "description": "Include progress analytics"
+          }
+        }
+      },
+      "CreateMessageDto": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "GitHub Repository",
+    "url": "https://github.com/gunibirlikdoz/api"
+  }
+}
