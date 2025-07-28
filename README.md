@@ -408,7 +408,7 @@ Bu proje MIT Lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 ```
 MIT License
 
-Copyright (c) 2024 GÜNÜBİRLİK DOZ
+Copyright (c) 2025 GÜNÜBİRLİK DOZ
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
