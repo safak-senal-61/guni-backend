@@ -1,98 +1,437 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🎓 GÜNÜBİRLİK DOZ - Eğitim Platformu API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<div align="center">
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma" />
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/Google_AI-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google AI" />
+  <img src="https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white" alt="LangChain" />
+</div>
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<div align="center">
+  <h3>🚀 Modern AI Destekli Eğitim Yönetim Sistemi</h3>
+  <p>Öğrenciler, öğretmenler ve veliler için kapsamlı eğitim platformu</p>
+</div>
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📋 İçindekiler
 
-## Project setup
+- [🎯 Proje Hakkında](#-proje-hakkında)
+- [✨ Özellikler](#-özellikler)
+- [🏗️ Teknoloji Stack](#️-teknoloji-stack)
+- [🚀 Kurulum](#-kurulum)
+- [📚 API Dokümantasyonu](#-api-dokümantasyonu)
+- [🔐 Kimlik Doğrulama](#-kimlik-doğrulama)
+- [🤖 AI Özellikleri](#-ai-özellikleri)
+- [👥 Kullanıcı Rolleri](#-kullanıcı-rolleri)
+- [📊 Modüller](#-modüller)
+- [🧪 Test](#-test)
+- [📄 Lisans](#-lisans)
 
+## 🎯 Proje Hakkında
+
+**GÜNÜBİRLİK DOZ**, modern eğitim ihtiyaçlarını karşılamak için geliştirilmiş kapsamlı bir eğitim yönetim sistemidir. Yapay zeka teknolojileri ile desteklenen platform, öğrenciler, öğretmenler ve veliler arasında etkili bir köprü kurarak eğitim sürecini optimize eder.
+
+### 🎯 Misyon
+Eğitimde teknoloji kullanımını yaygınlaştırarak, kişiselleştirilmiş öğrenme deneyimleri sunmak ve eğitim kalitesini artırmak.
+
+### 🌟 Vizyon
+AI destekli eğitim araçları ile geleceğin eğitim standardını bugünden oluşturmak.
+
+## ✨ Özellikler
+
+### 🤖 AI Destekli Özellikler
+- **İçerik Analizi**: Gemini 2.0 Flash ile güçlendirilmiş metin ve dosya analizi
+- **Otomatik Özetleme**: Video ve metin içeriklerinin AI ile özetlenmesi
+- **Akıllı Quiz Oluşturma**: LangGraph workflow ile çoktan seçmeli soru üretimi
+- **Kişiselleştirilmiş Öneriler**: Öğrenci performansına göre AI destekli öneriler
+- **Gelişmiş İçerik Analizi**: Çoklu adımlı LangGraph workflow ile kapsamlı analiz
+
+### 👨‍🎓 Öğrenci Özellikleri
+- Kişiselleştirilmiş ana sayfa ve öneriler
+- İnteraktif quiz sistemi
+- İlerleme takibi ve başarı rozetleri
+- Ders materyallerine erişim
+- Bildirim sistemi
+
+### 👨‍🏫 Öğretmen Özellikleri
+- AI destekli içerik oluşturma ve analiz
+- Öğrenci performans analizi
+- Quiz ve ders materyali yönetimi
+- Toplu bildirim gönderimi
+- Detaylı raporlama
+
+### 👨‍👩‍👧‍👦 Veli Özellikleri
+- Çocuk ilerleme takibi
+- Detaylı performans raporları
+- Öğretmen ile iletişim
+- Başarı bildirimleri
+- Analitik dashboard
+
+### 🔧 Sistem Özellikleri
+- JWT tabanlı güvenli kimlik doğrulama
+- Rol bazlı erişim kontrolü
+- E-posta doğrulama sistemi
+- Dosya yükleme ve yönetimi
+- Kapsamlı API dokümantasyonu (Swagger)
+- Gerçek zamanlı bildirimler
+
+## 🏗️ Teknoloji Stack
+
+### Backend Framework
+- **NestJS**: Modern, ölçeklenebilir Node.js framework
+- **TypeScript**: Tip güvenli JavaScript geliştirme
+- **Express**: HTTP server altyapısı
+
+### Veritabanı & ORM
+- **PostgreSQL**: Güçlü ilişkisel veritabanı
+- **Prisma**: Modern TypeScript ORM
+- **Prisma Client**: Tip güvenli veritabanı erişimi
+
+### AI & Machine Learning
+- **Google Generative AI (Gemini 2.0 Flash)**: Gelişmiş dil modeli
+- **LangChain**: AI uygulama geliştirme framework
+- **LangGraph**: Karmaşık AI workflow yönetimi
+
+### Güvenlik & Kimlik Doğrulama
+- **JWT (JSON Web Tokens)**: Güvenli token tabanlı kimlik doğrulama
+- **Passport.js**: Kimlik doğrulama middleware
+- **Argon2**: Güvenli şifre hashleme
+- **bcrypt**: Ek şifre güvenliği
+
+### Validation & Documentation
+- **Class Validator**: DTO validation
+- **Class Transformer**: Veri dönüşümü
+- **Swagger/OpenAPI**: Otomatik API dokümantasyonu
+
+### File Handling & Communication
+- **Multer**: Dosya yükleme işlemleri
+- **Nodemailer**: E-posta gönderimi
+- **SMTP**: E-posta sunucu entegrasyonu
+
+### Development & Testing
+- **Jest**: Unit ve integration testleri
+- **Supertest**: HTTP endpoint testleri
+- **ESLint**: Kod kalitesi kontrolü
+- **Prettier**: Kod formatlama
+
+## 🚀 Kurulum
+
+### Gereksinimler
+- Node.js (v18 veya üzeri)
+- PostgreSQL (v13 veya üzeri)
+- npm veya yarn
+
+### 1. Projeyi Klonlayın
 ```bash
-$ npm install
+git clone <repository-url>
+cd guni-backend
 ```
 
-## Compile and run the project
-
+### 2. Bağımlılıkları Yükleyin
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+### 3. Ortam Değişkenlerini Ayarlayın
+`.env` dosyası oluşturun:
+```env
+# Veritabanı
+DATABASE_URL="postgresql://username:password@localhost:5432/guni_db"
 
-```bash
-# unit tests
-$ npm run test
+# JWT Secrets
+JWT_SECRET="your-jwt-secret"
+JWT_REFRESH_SECRET="your-refresh-secret"
 
-# e2e tests
-$ npm run test:e2e
+# Google AI
+GOOGLE_API_KEY="your-google-api-key"
 
-# test coverage
-$ npm run test:cov
+# SMTP (E-posta)
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT=587
+SMTP_USER="your-email@gmail.com"
+SMTP_PASS="your-app-password"
+
+# Uygulama
+PORT=3000
+FRONTEND_URL="http://localhost:3000"
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### 4. Veritabanını Hazırlayın
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Prisma migration
+npx prisma migrate dev
+
+# Prisma client oluştur
+npx prisma generate
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 5. Uygulamayı Başlatın
 
-## Resources
+#### Development Mode
+```bash
+npm run start:dev
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+#### Production Mode
+```bash
+npm run build
+npm run start:prod
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Uygulama `http://localhost:3000` adresinde çalışacaktır.
 
-## Support
+## 📚 API Dokümantasyonu
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Swagger UI dokümantasyonuna erişim:
+```
+http://localhost:3000/api
+```
 
-## Stay in touch
+### Ana Endpoint Grupları
+- `/auth` - Kimlik doğrulama işlemleri
+- `/content-analysis` - AI destekli içerik analizi
+- `/user-onboarding` - Kullanıcı onboarding ve kişiselleştirme
+- `/student-panel` - Öğrenci paneli işlemleri
+- `/parent-panel` - Veli paneli işlemleri
+- `/lessons` - Ders yönetimi
+- `/quizzes` - Quiz işlemleri
+- `/achievements` - Başarı sistemi
+- `/notifications` - Bildirim yönetimi
+- `/analytics` - Analitik ve raporlama
+- `/uploads` - Dosya yükleme
+- `/messages` - Mesajlaşma sistemi
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## 🔐 Kimlik Doğrulama
 
-## License
+### JWT Token Kullanımı
+Tüm korumalı endpoint'ler için Authorization header'ı gereklidir:
+```
+Authorization: Bearer <your-jwt-token>
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Kullanıcı Kayıt ve Giriş
+```bash
+# Kayıt
+POST /auth/signup
+{
+  "email": "user@example.com",
+  "password": "securepassword",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+
+# Giriş
+POST /auth/signin
+{
+  "email": "user@example.com",
+  "password": "securepassword"
+}
+```
+
+## 🤖 AI Özellikleri
+
+### İçerik Özetleme
+```bash
+POST /content-analysis/summarize
+{
+  "text": "Özetlenecek metin içeriği",
+  "title": "İçerik Başlığı"
+}
+```
+
+### AI Quiz Oluşturma
+```bash
+POST /content-analysis/generate-quiz-questions
+{
+  "text": "Quiz konusu metni",
+  "numberOfQuestions": 5
+}
+```
+
+### Gelişmiş İçerik Analizi
+```bash
+POST /content-analysis/analyze-workflow
+{
+  "text": "Analiz edilecek içerik",
+  "analysisType": "educational_value"
+}
+```
+
+## 👥 Kullanıcı Rolleri
+
+| Rol | Açıklama | Yetkiler |
+|-----|----------|----------|
+| **STUDENT** | Öğrenci | Quiz çözme, ilerleme takibi, ders materyallerine erişim |
+| **TEACHER** | Öğretmen | İçerik oluşturma, AI analiz, öğrenci yönetimi |
+| **PARENT** | Veli | Çocuk takibi, performans raporları, iletişim |
+| **ADMIN** | Yönetici | Tam sistem erişimi, kullanıcı yönetimi |
+
+## 📊 Modüller
+
+### 🔐 Auth Module
+- Kullanıcı kayıt/giriş
+- JWT token yönetimi
+- E-posta doğrulama
+- Şifre sıfırlama
+
+### 🤖 Content Analysis Module
+- AI destekli içerik analizi
+- Otomatik özetleme
+- Quiz soru üretimi
+- LangGraph workflow
+
+### 🎯 User Onboarding Module
+- Kişiselleştirilmiş onboarding
+- AI destekli profil oluşturma
+- Öğrenme tercihleri analizi
+
+### 👨‍🎓 Student Panel Module
+- Öğrenci dashboard
+- İlerleme takibi
+- Quiz çözme
+- Başarı sistemi
+
+### 👨‍👩‍👧‍👦 Parent Panel Module
+- Veli dashboard
+- Çocuk performans takibi
+- Detaylı raporlar
+- İletişim araçları
+
+### 📚 Lessons Module
+- Ders içeriği yönetimi
+- Video/dosya yükleme
+- İçerik organizasyonu
+
+### 📝 Quizzes Module
+- Quiz oluşturma/yönetimi
+- Otomatik değerlendirme
+- Sonuç analizi
+
+### 🏆 Achievements Module
+- Başarı rozeti sistemi
+- İlerleme ödülleri
+- Motivasyon araçları
+
+### 🔔 Notifications Module
+- Gerçek zamanlı bildirimler
+- E-posta bildirimleri
+- Bildirim tercihleri
+
+### 📊 Analytics Module
+- Performans analizi
+- Kullanım istatistikleri
+- Detaylı raporlama
+
+### 📁 Uploads Module
+- Dosya yükleme
+- Medya yönetimi
+- Güvenli dosya erişimi
+
+### 💬 Messages Module
+- Kullanıcı arası mesajlaşma
+- Grup iletişimi
+- Mesaj geçmişi
+
+## 🧪 Test
+
+### Unit Testleri
+```bash
+npm run test
+```
+
+### Test Coverage
+```bash
+npm run test:cov
+```
+
+### E2E Testleri
+```bash
+npm run test:e2e
+```
+
+### Test Watch Mode
+```bash
+npm run test:watch
+```
+
+## 🚀 Deployment
+
+### Production Build
+```bash
+npm run build
+npm run start:prod
+```
+
+### Docker (Opsiyonel)
+```dockerfile
+# Dockerfile örneği
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY dist ./dist
+EXPOSE 3000
+CMD ["node", "dist/main"]
+```
+
+## 🤝 Katkıda Bulunma
+
+1. Fork yapın
+2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
+3. Değişikliklerinizi commit edin (`git commit -m 'Add amazing feature'`)
+4. Branch'inizi push edin (`git push origin feature/amazing-feature`)
+5. Pull Request oluşturun
+
+## 📞 İletişim
+
+- **Proje Sahibi**: GÜNÜBİRLİK DOZ Ekibi
+- **E-posta**: info@gunibirlikdoz.com
+- **Website**: https://gunibirlikdoz.com
+
+## 🙏 Teşekkürler
+
+- [NestJS](https://nestjs.com/) - Güçlü backend framework
+- [Prisma](https://prisma.io/) - Modern ORM
+- [Google AI](https://ai.google.dev/) - Gemini AI modeli
+- [LangChain](https://langchain.com/) - AI uygulama framework
+
+---
+
+## 📄 Lisans
+
+Bu proje MIT Lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakınız.
+
+```
+MIT License
+
+Copyright (c) 2024 GÜNÜBİRLİK DOZ
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+<div align="center">
+  <p>⭐ Bu projeyi beğendiyseniz yıldız vermeyi unutmayın!</p>
+  <p>Made with ❤️ by GÜNÜBİRLİK DOZ Team</p>
+</div>
