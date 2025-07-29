@@ -10,6 +10,12 @@ const path = require("path");
 dotenv.config();
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    app.enableCors({
+        origin: ['http://localhost:3001', 'http://localhost:5000', 'http://localhost:3000'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        credentials: true,
+    });
     app.useGlobalPipes(new common_1.ValidationPipe({ whitelist: true }));
     const config = new swagger_1.DocumentBuilder()
         .setTitle('🎓 GÜNÜBİRLİK DOZ API')

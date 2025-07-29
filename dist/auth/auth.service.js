@@ -44,7 +44,12 @@ let AuthService = class AuthService {
                     emailVerificationExpires,
                 },
             });
-            await this.mailService.sendEmailVerification(user.email, emailVerificationToken, user.firstName);
+            try {
+                await this.mailService.sendEmailVerification(user.email, emailVerificationToken, user.firstName);
+            }
+            catch (emailError) {
+                console.warn('Email sending failed:', emailError.message);
+            }
             return {
                 message: 'Kayıt başarılı! Lütfen e-posta adresinizi doğrulayın.',
                 email: user.email,
@@ -67,9 +72,6 @@ let AuthService = class AuthService {
         });
         if (!user)
             throw new common_1.ForbiddenException('E-posta veya şifre hatalı');
-        if (!user.isEmailVerified) {
-            throw new common_1.ForbiddenException('Lütfen önce e-posta adresinizi doğrulayın');
-        }
         const pwMatches = await argon.verify(user.password, dto.password);
         if (!pwMatches)
             throw new common_1.ForbiddenException('E-posta veya şifre hatalı');
