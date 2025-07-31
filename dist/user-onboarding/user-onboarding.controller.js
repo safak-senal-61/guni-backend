@@ -50,19 +50,10 @@ let UserOnboardingController = class UserOnboardingController {
         return this.userOnboardingService.getUserProfile(userId);
     }
     async refreshRecommendations(req) {
-        const options = {
-            lessonCount: 15,
-            includeQuizzes: true,
-            includeProgress: true,
-        };
-        return this.userOnboardingService.generatePersonalizedHomepage(req.user.sub, options);
+        return this.userOnboardingService.refreshRecommendations(req.user.sub);
     }
     async getWeakSubjectsAnalysis(req) {
-        const homepage = await this.userOnboardingService.generatePersonalizedHomepage(req.user.sub, { lessonCount: 5, includeQuizzes: false, includeProgress: false });
-        return {
-            weakSubjectsAnalysis: homepage.weakSubjectsAnalysis,
-            aiRecommendations: homepage.personalizedContent,
-        };
+        return this.userOnboardingService.generateWeaknessAnalysis(req.user.sub);
     }
     async getParentRequests(req) {
         return this.userOnboardingService.getParentRequests(req.user.sub);

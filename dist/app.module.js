@@ -24,6 +24,8 @@ const notifications_module_1 = require("./notifications/notifications.module");
 const achievements_module_1 = require("./achievements/achievements.module");
 const messages_module_1 = require("./messages/messages.module");
 const analytics_module_1 = require("./analytics/analytics.module");
+const ai_chat_module_1 = require("./ai-chat/ai-chat.module");
+const dashboard_module_1 = require("./dashboard/dashboard.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -46,6 +48,8 @@ exports.AppModule = AppModule = __decorate([
             achievements_module_1.AchievementsModule,
             messages_module_1.MessagesModule,
             analytics_module_1.AnalyticsModule,
+            ai_chat_module_1.AiChatModule,
+            dashboard_module_1.DashboardModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

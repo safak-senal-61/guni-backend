@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserOnboardingModule = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_module_1 = require("../prisma/prisma.module");
+const content_analysis_module_1 = require("../content-analysis/content-analysis.module");
 const user_onboarding_controller_1 = require("./user-onboarding.controller");
 const user_onboarding_service_1 = require("./user-onboarding.service");
 let UserOnboardingModule = class UserOnboardingModule {
@@ -16,7 +17,7 @@ let UserOnboardingModule = class UserOnboardingModule {
 exports.UserOnboardingModule = UserOnboardingModule;
 exports.UserOnboardingModule = UserOnboardingModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
+        imports: [prisma_module_1.PrismaModule, content_analysis_module_1.ContentAnalysisModule],
         controllers: [user_onboarding_controller_1.UserOnboardingController],
         providers: [user_onboarding_service_1.UserOnboardingService],
         exports: [user_onboarding_service_1.UserOnboardingService],

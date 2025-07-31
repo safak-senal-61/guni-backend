@@ -1,8 +1,8 @@
-import { PrismaService } from '../prisma/prisma.service';
-import { AuthDto, SignupDto, ForgotPasswordDto, ResetPasswordDto, ChangePasswordDto, VerifyEmailDto, ResendVerificationDto } from './auth.dto';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
+import { AuthDto, SignupDto, ForgotPasswordDto, ResetPasswordDto, VerifyEmailDto, ResendVerificationDto } from './auth.dto';
 export declare class AuthService {
     private prisma;
     private jwt;
@@ -22,6 +22,10 @@ export declare class AuthService {
         accessToken: string;
         refreshToken: string;
     }>;
+    refreshWithToken(refreshToken: string): Promise<{
+        accessToken: string;
+        refreshToken: string;
+    }>;
     updateRefreshToken(userId: string, refreshToken: string): Promise<void>;
     verifyEmail(dto: VerifyEmailDto): Promise<{
         message: string;
@@ -35,8 +39,31 @@ export declare class AuthService {
     resetPassword(dto: ResetPasswordDto): Promise<{
         message: string;
     }>;
-    changePassword(userId: string, dto: ChangePasswordDto): Promise<{
+    changePassword(userId: string, oldPassword: string, newPassword: string): Promise<{
         message: string;
+    }>;
+    requestPasswordReset(email: string): Promise<{
+        message: string;
+    }>;
+    resetPasswordWithToken(token: string, newPassword: string): Promise<{
+        message: string;
+    }>;
+    getUserProfile(userId: string): Promise<{
+        email: string;
+        firstName: string;
+        lastName: string;
+        id: string;
+        role: import(".prisma/client").$Enums.UserRole;
+        isEmailVerified: boolean;
+        dateOfBirth: Date | null;
+        age: number | null;
+        gender: import(".prisma/client").$Enums.Gender | null;
+        gradeLevel: import(".prisma/client").$Enums.GradeLevel | null;
+        onboardingStatus: import(".prisma/client").$Enums.OnboardingStatus;
+        preferences: import("@prisma/client/runtime/library").JsonValue;
+        weakSubjects: string[];
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     getTokens(userId: string, email: string): Promise<{
         accessToken: string;

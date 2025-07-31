@@ -124,6 +124,9 @@ model User {
   
   // Progress summaries
   progressSummaries StudentProgressSummary[]
+  
+  // AI Chat messages
+  chatMessages ChatMessage[]
 }
 
 model Lesson {
@@ -196,6 +199,18 @@ model QuizAttempt {
 
   user        User     @relation(fields: [userId], references: [id])
   quiz        Quiz     @relation(fields: [quizId], references: [id])
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  userId    String
+  content   String
+  role      String   // 'user' or 'assistant'
+  timestamp DateTime @default(now())
+  metadata  Json?    // Additional context or data
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Message {
@@ -282,6 +297,7 @@ model AssessmentResult {
   correctAnswers     Int
   weakAreas          String[] @default([])
   recommendations    Json?    // AI-generated recommendations
+  metadata           Json?    // Additional assessment metadata
   assessmentType     String   // "onboarding", "diagnostic", "progress"
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt

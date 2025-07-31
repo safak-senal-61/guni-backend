@@ -21,6 +21,9 @@ const passport_1 = require("@nestjs/passport");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
 const user_roles_enum_1 = require("../common/enums/user-roles.enum");
 const roles_guard_1 = require("../common/guards/roles.guard");
+const platform_express_1 = require("@nestjs/platform-express");
+const multer_1 = require("multer");
+const path_1 = require("path");
 let AuthController = class AuthController {
     authService;
     constructor(authService) {
@@ -36,12 +39,12 @@ let AuthController = class AuthController {
         const user = req.user;
         return this.authService.logout(user.id);
     }
-    refresh(req) {
-        const user = req.user;
-        return this.authService.refresh(user.id, user.refreshToken);
+    refresh(dto) {
+        return this.authService.refreshWithToken(dto.refreshToken);
     }
     me(req) {
-        return req.user;
+        const user = req.user;
+        return this.authService.getUserProfile(user.id);
     }
     verifyEmail(dto) {
         return this.authService.verifyEmail(dto);
@@ -49,15 +52,29 @@ let AuthController = class AuthController {
     resendVerification(dto) {
         return this.authService.resendVerification(dto);
     }
-    forgotPassword(dto) {
-        return this.authService.forgotPassword(dto);
-    }
-    resetPassword(dto) {
-        return this.authService.resetPassword(dto);
-    }
-    changePassword(req, dto) {
+    async changePassword(req, dto) {
         const user = req.user;
-        return this.authService.changePassword(user.id, dto);
+        return this.authService.changePassword(user.id, dto.currentPassword, dto.newPassword);
+    }
+    async forgotPassword(dto) {
+        return this.authService.requestPasswordReset(dto.email);
+    }
+    async resetPassword(dto) {
+        return this.authService.resetPasswordWithToken(dto.token, dto.newPassword);
+    }
+    uploadProfilePicture(req, file) {
+        if (!file) {
+            throw new Error('No file uploaded');
+        }
+        const user = req.user;
+        const filePath = `/uploads/${file.filename}`;
+        return {
+            message: 'Profil fotoğrafı başarıyla yüklendi',
+            filePath: filePath,
+            fileName: file.filename,
+            originalName: file.originalname,
+            size: file.size
+        };
     }
 };
 exports.AuthController = AuthController;
@@ -82,7 +99,7 @@ __decorate([
         summary: 'Kullanıcı girişi',
         description: 'E-posta ve şifre ile kullanıcı girişi yapar. Başarılı girişte access ve refresh token döner.'
     }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Kullanıcı başarıyla giriş yaptı - Access ve refresh token döndürülür' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Kullanıcı başarıyla giriş yaptı - Access ve refresh token döndürülür', type: auth_dto_1.AuthResponseDto }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Hatalı istek - Eksik e-posta veya şifre' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Geçersiz kimlik bilgileri - Yanlış e-posta veya şifre' }),
     __param(0, (0, common_1.Body)()),
@@ -107,19 +124,17 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "logout", null);
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt-refresh')),
     (0, common_1.Post)('refresh'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, swagger_1.ApiOperation)({
         summary: 'Erişim token\'ını yenile',
-        description: 'Refresh token kullanarak yeni access token alır.'
+        description: 'Refresh token kullanarak yeni access token alır. Body\'de refresh token gönderilmelidir.'
     }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Token başarıyla yenilendi' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Token başarıyla yenilendi', type: auth_dto_1.AuthResponseDto }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Geçersiz refresh token' }),
-    (0, swagger_1.ApiBearerAuth)(),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [auth_dto_1.RefreshTokenDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "refresh", null);
 __decorate([
@@ -128,9 +143,9 @@ __decorate([
     (0, common_1.Get)('me'),
     (0, swagger_1.ApiOperation)({
         summary: 'Mevcut kullanıcıyı getir',
-        description: 'Giriş yapmış kullanıcının profil bilgilerini döndürür.'
+        description: 'Giriş yapmış kullanıcının detaylı profil bilgilerini döndürür.'
     }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Kullanıcı bilgileri döndürüldü' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Kullanıcı bilgileri döndürüldü', type: auth_dto_1.UserProfileDto }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz' }),
     (0, swagger_1.ApiBearerAuth)(),
     __param(0, (0, common_1.Req)()),
@@ -162,41 +177,78 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "resendVerification", null);
 __decorate([
-    (0, common_1.Post)('forgot-password'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    (0, swagger_1.ApiOperation)({ summary: 'Request password reset' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Password reset email sent if user exists' }),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [auth_dto_1.ForgotPasswordDto]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "forgotPassword", null);
-__decorate([
-    (0, common_1.Post)('reset-password'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    (0, swagger_1.ApiOperation)({ summary: 'Reset password with token' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Password reset successfully' }),
-    (0, swagger_1.ApiResponse)({ status: 400, description: 'Invalid or expired reset token' }),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [auth_dto_1.ResetPasswordDto]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "resetPassword", null);
-__decorate([
     (0, common_1.Post)('change-password'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    (0, swagger_1.ApiOperation)({ summary: 'Change password for authenticated user' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Password changed successfully' }),
-    (0, swagger_1.ApiResponse)({ status: 400, description: 'Current password is incorrect' }),
-    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Şifre değiştir' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Şifre başarıyla değiştirildi' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Geçersiz şifre' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Yetkisiz erişim' }),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, auth_dto_1.ChangePasswordDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "changePassword", null);
+__decorate([
+    (0, common_1.Post)('forgot-password'),
+    (0, swagger_1.ApiOperation)({ summary: 'Şifre sıfırlama talebi' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Şifre sıfırlama e-postası gönderildi' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Geçersiz e-posta' }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [auth_dto_1.ForgotPasswordDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "forgotPassword", null);
+__decorate([
+    (0, common_1.Post)('reset-password'),
+    (0, swagger_1.ApiOperation)({ summary: 'Şifre sıfırla' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Şifre başarıyla sıfırlandı' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Geçersiz veya süresi dolmuş token' }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [auth_dto_1.ResetPasswordDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "resetPassword", null);
+__decorate([
+    (0, common_1.Post)('upload-profile-picture'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('profilePicture', {
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads',
+            filename: (req, file, cb) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+                cb(null, `profile-${uniqueSuffix}${(0, path_1.extname)(file.originalname)}`);
+            },
+        }),
+        fileFilter: (req, file, cb) => {
+            if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+                cb(null, true);
+            }
+            else {
+                cb(new Error('Only image files are allowed!'), false);
+            }
+        },
+        limits: {
+            fileSize: 5 * 1024 * 1024,
+        },
+    })),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Profil fotoğrafı yükle',
+        description: 'Kullanıcının profil fotoğrafını yükler. Desteklenen formatlar: JPG, JPEG, PNG, GIF. Maksimum boyut: 5MB'
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Profil fotoğrafı başarıyla yüklendi' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Geçersiz dosya formatı veya boyutu' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Kimlik doğrulama gerekli' }),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "uploadProfilePicture", null);
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)('auth'),
     (0, common_1.Controller)('auth'),

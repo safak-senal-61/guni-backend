@@ -6,6 +6,7 @@ import { PrismaModule } from '../prisma/prisma.module';
 @Module({
   imports: [PrismaModule],
   providers: [ContentAnalysisService],
-  controllers: [ContentAnalysisController]
+  controllers: [ContentAnalysisController],
+  exports: [ContentAnalysisService]
 })
 export class ContentAnalysisModule {}

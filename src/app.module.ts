@@ -15,6 +15,8 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { AchievementsModule } from './achievements/achievements.module';
 import { MessagesModule } from './messages/messages.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { AiChatModule } from './ai-chat/ai-chat.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { AnalyticsModule } from './analytics/analytics.module';
     AchievementsModule,
     MessagesModule,
     AnalyticsModule,
+    AiChatModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -64,7 +64,14 @@
         },
         "responses": {
           "200": {
-            "description": "Kullanıcı başarıyla giriş yaptı - Access ve refresh token döndürülür"
+            "description": "Kullanıcı başarıyla giriş yaptı - Access ve refresh token döndürülür",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
           },
           "400": {
             "description": "Hatalı istek - Eksik e-posta veya şifre"
@@ -105,22 +112,34 @@
     },
     "/auth/refresh": {
       "post": {
-        "description": "Refresh token kullanarak yeni access token alır.",
+        "description": "Refresh token kullanarak yeni access token alır. Body'de refresh token gönderilmelidir.",
         "operationId": "AuthController_refresh",
         "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Token başarıyla yenilendi"
+            "description": "Token başarıyla yenilendi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
           },
           "401": {
             "description": "Geçersiz refresh token"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Erişim token'ını yenile",
         "tags": [
           "auth"
@@ -129,12 +148,19 @@
     },
     "/auth/me": {
       "get": {
-        "description": "Giriş yapmış kullanıcının profil bilgilerini döndürür.",
+        "description": "Giriş yapmış kullanıcının detaylı profil bilgilerini döndürür.",
         "operationId": "AuthController_me",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Kullanıcı bilgileri döndürüldü"
+            "description": "Kullanıcı bilgileri döndürüldü",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileDto"
+                }
+              }
+            }
           },
           "401": {
             "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz"
@@ -210,6 +236,42 @@
         ]
       }
     },
+    "/auth/change-password": {
+      "post": {
+        "operationId": "AuthController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Şifre başarıyla değiştirildi"
+          },
+          "400": {
+            "description": "Geçersiz şifre"
+          },
+          "401": {
+            "description": "Yetkisiz erişim"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Şifre değiştir",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/auth/forgot-password": {
       "post": {
         "operationId": "AuthController_forgotPassword",
@@ -226,10 +288,13 @@
         },
         "responses": {
           "200": {
-            "description": "Password reset email sent if user exists"
+            "description": "Şifre sıfırlama e-postası gönderildi"
+          },
+          "400": {
+            "description": "Geçersiz e-posta"
           }
         },
-        "summary": "Request password reset",
+        "summary": "Şifre sıfırlama talebi",
         "tags": [
           "auth"
         ]
@@ -251,41 +316,32 @@
         },
         "responses": {
           "200": {
-            "description": "Password reset successfully"
+            "description": "Şifre başarıyla sıfırlandı"
           },
           "400": {
-            "description": "Invalid or expired reset token"
+            "description": "Geçersiz veya süresi dolmuş token"
           }
         },
-        "summary": "Reset password with token",
+        "summary": "Şifre sıfırla",
         "tags": [
           "auth"
         ]
       }
     },
-    "/auth/change-password": {
+    "/auth/upload-profile-picture": {
       "post": {
-        "operationId": "AuthController_changePassword",
+        "description": "Kullanıcının profil fotoğrafını yükler. Desteklenen formatlar: JPG, JPEG, PNG, GIF. Maksimum boyut: 5MB",
+        "operationId": "AuthController_uploadProfilePicture",
         "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChangePasswordDto"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
-            "description": "Password changed successfully"
+            "description": "Profil fotoğrafı başarıyla yüklendi"
           },
           "400": {
-            "description": "Current password is incorrect"
+            "description": "Geçersiz dosya formatı veya boyutu"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Kimlik doğrulama gerekli"
           }
         },
         "security": [
@@ -293,7 +349,7 @@
             "bearer": []
           }
         ],
-        "summary": "Change password for authenticated user",
+        "summary": "Profil fotoğrafı yükle",
         "tags": [
           "auth"
         ]
@@ -301,7 +357,7 @@
     },
     "/content-analysis/summarize": {
       "post": {
-        "description": "Sadece ADMIN ve TEACHER rolleri AI ile içerik özetleyebilir.",
+        "description": "Herkes tarafından erişilebilir. LangChain ve Gemini 2.0 Flash ile güçlendirilmiş detaylı eğitimsel özetleme.",
         "operationId": "ContentAnalysisController_summarize",
         "parameters": [],
         "requestBody": {
@@ -318,19 +374,14 @@
           "201": {
             "description": "İçerik başarıyla özetlendi"
           },
-          "401": {
-            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          "400": {
+            "description": "Geçersiz istek verisi"
           },
-          "403": {
-            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri erişebilir."
+          "500": {
+            "description": "Sunucu hatası"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "AI kullanarak içerik özetleme",
+        "summary": "AI kullanarak gelişmiş içerik özetleme",
         "tags": [
           "content-analysis"
         ]
@@ -338,7 +389,7 @@
     },
     "/content-analysis/summarize-file": {
       "post": {
-        "description": "Sadece ADMIN ve TEACHER rolleri AI ile dosya içeriğini özetleyebilir.",
+        "description": "Herkes tarafından erişilebilir. LangChain ve Gemini 2.0 Flash ile güçlendirilmiş dosya özetleme.",
         "operationId": "ContentAnalysisController_summarizeFile",
         "parameters": [],
         "requestBody": {
@@ -355,19 +406,14 @@
           "201": {
             "description": "Dosya içeriği başarıyla özetlendi"
           },
-          "401": {
-            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          "400": {
+            "description": "Geçersiz istek verisi"
           },
-          "403": {
-            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri erişebilir."
+          "500": {
+            "description": "Sunucu hatası"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "AI kullanarak dosya içeriğini özetleme",
+        "summary": "AI kullanarak gelişmiş dosya içeriği özetleme",
         "tags": [
           "content-analysis"
         ]
@@ -375,7 +421,7 @@
     },
     "/content-analysis/generate-quiz-questions": {
       "post": {
-        "description": "Sadece ADMIN ve TEACHER rolleri LangGraph workflow kullanarak AI ile quiz soruları oluşturabilir. Gemini 2.0 Flash modeli ile güçlendirilmiştir.",
+        "description": "Herkes tarafından erişilebilir. LangChain ve Gemini 2.0 Flash ile güçlendirilmiş quiz sorusu üretimi.",
         "operationId": "ContentAnalysisController_generateQuizQuestions",
         "parameters": [],
         "requestBody": {
@@ -392,19 +438,14 @@
           "201": {
             "description": "Quiz soruları başarıyla oluşturuldu"
           },
-          "401": {
-            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          "400": {
+            "description": "Geçersiz istek verisi"
           },
-          "403": {
-            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri erişebilir."
+          "500": {
+            "description": "Sunucu hatası"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "LangGraph ile gelişmiş quiz soruları oluşturma",
+        "summary": "LangChain ile gelişmiş quiz soruları oluşturma",
         "tags": [
           "content-analysis"
         ]
@@ -412,8 +453,8 @@
     },
     "/content-analysis/analyze-workflow": {
       "post": {
-        "description": "Sadece ADMIN ve TEACHER rolleri LangGraph workflow kullanarak kapsamlı içerik analizi yapabilir. Gemini 2.0 Flash modeli ile çoklu adımlı analiz sunar.",
-        "operationId": "ContentAnalysisController_analyzeContentWithWorkflow",
+        "description": "Herkes tarafından erişilebilir. LangGraph workflow ve Gemini 2.0 Flash ile güçlendirilmiş içerik analizi.",
+        "operationId": "ContentAnalysisController_analyzeContentWorkflow",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -429,18 +470,13 @@
           "201": {
             "description": "İçerik analizi başarıyla tamamlandı"
           },
-          "401": {
-            "description": "Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz."
+          "400": {
+            "description": "Geçersiz istek verisi"
           },
-          "403": {
-            "description": "Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri erişebilir."
+          "500": {
+            "description": "Sunucu hatası"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "LangGraph workflow ile gelişmiş içerik analizi",
         "tags": [
           "content-analysis"
@@ -2312,6 +2348,250 @@
           "Analytics"
         ]
       }
+    },
+    "/ai-chat/send-message": {
+      "post": {
+        "operationId": "AiChatController_sendMessage",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "AI yanıtı başarıyla alındı"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Kullanıcının AI ile sohbet etmesi için mesaj gönderme",
+        "tags": [
+          "AI Chat"
+        ]
+      }
+    },
+    "/ai-chat/conversation-history": {
+      "get": {
+        "operationId": "AiChatController_getConversationHistory",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sohbet geçmişi başarıyla alındı"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Kullanıcının sohbet geçmişini getirme",
+        "tags": [
+          "AI Chat"
+        ]
+      }
+    },
+    "/ai-chat/get-study-suggestions": {
+      "post": {
+        "operationId": "AiChatController_getStudySuggestions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Çalışma önerileri başarıyla oluşturuldu"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Kullanıcının durumuna göre çalışma önerileri alma",
+        "tags": [
+          "AI Chat"
+        ]
+      }
+    },
+    "/ai-chat/explain-topic": {
+      "post": {
+        "operationId": "AiChatController_explainTopic",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Konu açıklaması başarıyla oluşturuldu"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Belirli bir konunun AI tarafından açıklanması",
+        "tags": [
+          "AI Chat"
+        ]
+      }
+    },
+    "/ai-chat/motivational-support": {
+      "post": {
+        "operationId": "AiChatController_getMotivationalSupport",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Motivasyon desteği başarıyla oluşturuldu"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Kullanıcıya motivasyon desteği sağlama",
+        "tags": [
+          "AI Chat"
+        ]
+      }
+    },
+    "/dashboard/weaknesses-analysis": {
+      "get": {
+        "operationId": "DashboardController_getWeaknessesAnalysis",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Eksiklik analizi başarıyla alındı"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Kullanıcının eksiklik analizi ve iyileştirme önerileri",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/dashboard/progress-tracking": {
+      "get": {
+        "operationId": "DashboardController_getProgressTracking",
+        "parameters": [
+          {
+            "name": "period",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "İlerleme takibi başarıyla alındı"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Kullanıcının ilerleme takibi ve istatistikleri",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/dashboard/study-recommendations": {
+      "get": {
+        "operationId": "DashboardController_getStudyRecommendations",
+        "parameters": [
+          {
+            "name": "focus",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Çalışma önerileri başarıyla oluşturuldu"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Kişiselleştirilmiş çalışma önerileri",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/dashboard/achievement-summary": {
+      "get": {
+        "operationId": "DashboardController_getAchievementSummary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Başarı özeti başarıyla alındı"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Kullanıcının başarı özeti ve motivasyon verileri",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/dashboard/personalized-homepage": {
+      "get": {
+        "operationId": "DashboardController_getPersonalizedHomepage",
+        "parameters": [
+          {
+            "name": "includeProgress",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "lessonCount",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ana sayfa içeriği başarıyla oluşturuldu"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Kişiselleştirilmiş ana sayfa içeriği",
+        "tags": [
+          "Dashboard"
+        ]
+      }
     }
   },
   "info": {
@@ -2441,6 +2721,176 @@
           "password"
         ]
       },
+      "AuthResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+            "description": "JWT access token (expires in 15 minutes)"
+          },
+          "refreshToken": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+            "description": "JWT refresh token (expires in 7 days)"
+          }
+        },
+        "required": [
+          "accessToken",
+          "refreshToken"
+        ]
+      },
+      "RefreshTokenDto": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+            "description": "Refresh token to get new access token"
+          }
+        },
+        "required": [
+          "refreshToken"
+        ]
+      },
+      "UserProfileDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid-string",
+            "description": "User unique identifier"
+          },
+          "email": {
+            "type": "string",
+            "example": "test@example.com",
+            "description": "User email address"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John",
+            "description": "User first name"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe",
+            "description": "User last name"
+          },
+          "role": {
+            "type": "string",
+            "example": "STUDENT",
+            "description": "User role in the system",
+            "enum": [
+              "STUDENT",
+              "TEACHER",
+              "ADMIN",
+              "PARENT"
+            ]
+          },
+          "isEmailVerified": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether user email is verified"
+          },
+          "dateOfBirth": {
+            "format": "date-time",
+            "type": "string",
+            "example": "1990-01-01T00:00:00.000Z",
+            "description": "User birth date"
+          },
+          "age": {
+            "type": "number",
+            "example": 25,
+            "description": "User age"
+          },
+          "gender": {
+            "type": "string",
+            "example": "MALE",
+            "description": "User gender",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "gradeLevel": {
+            "type": "string",
+            "example": "GRADE_10",
+            "description": "User grade level",
+            "enum": [
+              "GRADE_1",
+              "GRADE_2",
+              "GRADE_3",
+              "GRADE_4",
+              "GRADE_5",
+              "GRADE_6",
+              "GRADE_7",
+              "GRADE_8",
+              "GRADE_9",
+              "GRADE_10",
+              "GRADE_11",
+              "GRADE_12"
+            ]
+          },
+          "onboardingStatus": {
+            "type": "string",
+            "example": "COMPLETED",
+            "description": "User onboarding status",
+            "enum": [
+              "NOT_STARTED",
+              "IN_PROGRESS",
+              "COMPLETED"
+            ]
+          },
+          "preferences": {
+            "type": "object",
+            "example": {
+              "learningStyle": "VISUAL",
+              "subjects": [
+                "Math",
+                "Science"
+              ]
+            },
+            "description": "User preferences and learning settings"
+          },
+          "weakSubjects": {
+            "example": [
+              "Math",
+              "Physics"
+            ],
+            "description": "Subjects where user needs improvement",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z",
+            "description": "Account creation date"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2023-01-01T00:00:00.000Z",
+            "description": "Last profile update date"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "firstName",
+          "lastName",
+          "role",
+          "isEmailVerified",
+          "onboardingStatus",
+          "weakSubjects",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
       "VerifyEmailDto": {
         "type": "object",
         "properties": {
@@ -2465,6 +2915,25 @@
         },
         "required": [
           "email"
+        ]
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string",
+            "example": "oldpassword123",
+            "description": "Current password"
+          },
+          "newPassword": {
+            "type": "string",
+            "example": "newpassword123",
+            "description": "New password"
+          }
+        },
+        "required": [
+          "currentPassword",
+          "newPassword"
         ]
       },
       "ForgotPasswordDto": {
@@ -2499,25 +2968,6 @@
           "newPassword"
         ]
       },
-      "ChangePasswordDto": {
-        "type": "object",
-        "properties": {
-          "currentPassword": {
-            "type": "string",
-            "example": "oldpassword123",
-            "description": "Current password"
-          },
-          "newPassword": {
-            "type": "string",
-            "example": "newpassword123",
-            "description": "New password"
-          }
-        },
-        "required": [
-          "currentPassword",
-          "newPassword"
-        ]
-      },
       "SummarizeContentDto": {
         "type": "object",
         "properties": {
@@ -2532,6 +2982,39 @@
           "title": {
             "type": "string",
             "description": "Title of the content (optional)"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Subject area (e.g., Mathematics, Science, History)"
+          },
+          "gradeLevel": {
+            "type": "string",
+            "description": "Grade level (e.g., 5th Grade, 8th Grade, High School)"
+          },
+          "learningObjectives": {
+            "type": "string",
+            "description": "Learning objectives or goals"
+          },
+          "targetAudience": {
+            "type": "string",
+            "description": "Target audience (e.g., students, teachers, parents)"
+          },
+          "difficultyLevel": {
+            "type": "string",
+            "description": "Difficulty level (beginner, intermediate, advanced)"
+          },
+          "durationMinutes": {
+            "type": "number",
+            "description": "Duration of the content in minutes"
+          },
+          "keyTopics": {
+            "type": "string",
+            "description": "Key topics or keywords to focus on"
+          },
+          "summaryType": {
+            "type": "string",
+            "description": "Type of summary needed (brief, detailed, educational)",
+            "default": "educational"
           }
         },
         "required": [
@@ -2548,6 +3031,39 @@
           "title": {
             "type": "string",
             "description": "Title of the content (optional)"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Subject area (e.g., Mathematics, Science, History)"
+          },
+          "gradeLevel": {
+            "type": "string",
+            "description": "Grade level (e.g., 5th Grade, 8th Grade, High School)"
+          },
+          "learningObjectives": {
+            "type": "string",
+            "description": "Learning objectives or goals"
+          },
+          "targetAudience": {
+            "type": "string",
+            "description": "Target audience (e.g., students, teachers, parents)"
+          },
+          "difficultyLevel": {
+            "type": "string",
+            "description": "Difficulty level (beginner, intermediate, advanced)"
+          },
+          "durationMinutes": {
+            "type": "number",
+            "description": "Duration of the content in minutes"
+          },
+          "keyTopics": {
+            "type": "string",
+            "description": "Key topics or keywords to focus on"
+          },
+          "summaryType": {
+            "type": "string",
+            "description": "Type of summary needed (brief, detailed, educational)",
+            "default": "educational"
           }
         },
         "required": [
@@ -2565,6 +3081,37 @@
             "type": "number",
             "description": "Number of questions to generate",
             "default": 5
+          },
+          "subject": {
+            "type": "string",
+            "description": "Subject area (e.g., Mathematics, Science, History)"
+          },
+          "gradeLevel": {
+            "type": "string",
+            "description": "Grade level (e.g., 5th Grade, 8th Grade, High School)"
+          },
+          "difficultyLevel": {
+            "type": "string",
+            "description": "Difficulty level (easy, medium, hard)",
+            "default": "medium"
+          },
+          "questionType": {
+            "type": "string",
+            "description": "Question type (multiple-choice, true-false, fill-blank)",
+            "default": "multiple-choice"
+          },
+          "learningObjectives": {
+            "type": "string",
+            "description": "Learning objectives to focus on"
+          },
+          "keyTopics": {
+            "type": "string",
+            "description": "Key topics or keywords to emphasize"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language for questions (Turkish, English)",
+            "default": "Turkish"
           }
         },
         "required": [
@@ -2587,6 +3134,45 @@
               "educational"
             ],
             "default": "summary"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Subject area (e.g., Mathematics, Science, History)"
+          },
+          "gradeLevel": {
+            "type": "string",
+            "description": "Grade level (e.g., 5th Grade, 8th Grade, High School)"
+          },
+          "learningObjectives": {
+            "type": "string",
+            "description": "Learning objectives or goals"
+          },
+          "targetAudience": {
+            "type": "string",
+            "description": "Target audience (e.g., students, teachers, parents)"
+          },
+          "difficultyLevel": {
+            "type": "string",
+            "description": "Difficulty level (beginner, intermediate, advanced)"
+          },
+          "keyTopics": {
+            "type": "string",
+            "description": "Key topics or keywords to focus on"
+          },
+          "analysisDepth": {
+            "type": "string",
+            "description": "Analysis depth (shallow, moderate, deep)",
+            "default": "moderate"
+          },
+          "includeRecommendations": {
+            "type": "boolean",
+            "description": "Include educational recommendations",
+            "default": true
+          },
+          "language": {
+            "type": "string",
+            "description": "Language for analysis output (Turkish, English)",
+            "default": "Turkish"
           }
         },
         "required": [

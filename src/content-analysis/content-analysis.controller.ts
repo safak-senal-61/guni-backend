@@ -1,105 +1,119 @@
-import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { ContentAnalysisService } from './content-analysis.service';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from '../common/guards/roles.guard';
-import { Roles } from '../common/decorators/roles.decorator';
-import { UserRole } from '../common/enums/user-roles.enum';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { SummarizeContentDto, SummarizeFileDto, GenerateQuizQuestionsDto, AnalyzeContentWorkflowDto } from './content-analysis.dto';
-import { Request } from 'express';
 
 @ApiTags('content-analysis')
 @Controller('content-analysis')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class ContentAnalysisController {
   constructor(private readonly contentAnalysisService: ContentAnalysisService) {}
 
   @Post('summarize')
-  @Roles(UserRole.ADMIN, UserRole.TEACHER)
   @ApiOperation({ 
-    summary: 'AI kullanarak içerik özetleme',
-    description: 'Sadece ADMIN ve TEACHER rolleri AI ile içerik özetleyebilir.'
+    summary: 'AI kullanarak gelişmiş içerik özetleme',
+    description: 'Herkes tarafından erişilebilir. LangChain ve Gemini 2.0 Flash ile güçlendirilmiş detaylı eğitimsel özetleme.'
   })
   @ApiResponse({ status: 201, description: 'İçerik başarıyla özetlendi' })
-  @ApiResponse({ status: 401, description: 'Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz.' })
-  @ApiResponse({ status: 403, description: 'Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri erişebilir.' })
-  @ApiBearerAuth()
+  @ApiResponse({ status: 400, description: 'Geçersiz istek verisi' })
+  @ApiResponse({ status: 500, description: 'Sunucu hatası' })
   async summarize(
     @Body() dto: SummarizeContentDto,
-    @Req() req: Request,
   ) {
-    const user = req.user as Express.User;
-    const userId = user.id;
+    const userId = 'public-user'; // Public access için sabit userId
     return this.contentAnalysisService.summarizeContent(
       dto.text,
       userId,
       dto.videoUrl,
       dto.title,
+      dto.subject,
+      dto.gradeLevel,
+      dto.learningObjectives,
+      dto.targetAudience,
+      dto.difficultyLevel,
+      dto.durationMinutes,
+      dto.keyTopics,
+      dto.summaryType,
     );
   }
 
   @Post('summarize-file')
-  @Roles(UserRole.ADMIN, UserRole.TEACHER)
   @ApiOperation({ 
-    summary: 'AI kullanarak dosya içeriğini özetleme',
-    description: 'Sadece ADMIN ve TEACHER rolleri AI ile dosya içeriğini özetleyebilir.'
+    summary: 'AI kullanarak gelişmiş dosya içeriği özetleme',
+    description: 'Herkes tarafından erişilebilir. LangChain ve Gemini 2.0 Flash ile güçlendirilmiş dosya özetleme.'
   })
   @ApiResponse({ status: 201, description: 'Dosya içeriği başarıyla özetlendi' })
-  @ApiResponse({ status: 401, description: 'Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz.' })
-  @ApiResponse({ status: 403, description: 'Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri erişebilir.' })
-  @ApiBearerAuth()
+  @ApiResponse({ status: 400, description: 'Geçersiz istek verisi' })
+  @ApiResponse({ status: 500, description: 'Sunucu hatası' })
   async summarizeFile(
     @Body() dto: SummarizeFileDto,
-    @Req() req: Request,
   ) {
-    const user = req.user as Express.User;
-    const userId = user.id;
-    return this.contentAnalysisService.summarizeFile(
+    const userId = 'public-user'; // Public access için sabit userId
+    return this.contentAnalysisService.summarizeFileEnhanced(
       dto.filePath,
       userId,
       dto.title,
+      dto.subject,
+      dto.gradeLevel,
+      dto.learningObjectives,
+      dto.targetAudience,
+      dto.difficultyLevel,
+      dto.durationMinutes,
+      dto.keyTopics,
+      dto.summaryType,
     );
   }
 
   @Post('generate-quiz-questions')
-  @Roles(UserRole.ADMIN, UserRole.TEACHER)
   @ApiOperation({ 
-    summary: 'LangGraph ile gelişmiş quiz soruları oluşturma',
-    description: 'Sadece ADMIN ve TEACHER rolleri LangGraph workflow kullanarak AI ile quiz soruları oluşturabilir. Gemini 2.0 Flash modeli ile güçlendirilmiştir.'
+    summary: 'LangChain ile gelişmiş quiz soruları oluşturma',
+    description: 'Herkes tarafından erişilebilir. LangChain ve Gemini 2.0 Flash ile güçlendirilmiş quiz sorusu üretimi.'
   })
   @ApiResponse({ status: 201, description: 'Quiz soruları başarıyla oluşturuldu' })
-  @ApiResponse({ status: 401, description: 'Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz.' })
-  @ApiResponse({ status: 403, description: 'Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri erişebilir.' })
-  @ApiBearerAuth()
+  @ApiResponse({ status: 400, description: 'Geçersiz istek verisi' })
+  @ApiResponse({ status: 500, description: 'Sunucu hatası' })
   async generateQuizQuestions(
     @Body() dto: GenerateQuizQuestionsDto,
   ) {
-    return this.contentAnalysisService.generateQuizQuestions(
+    const userId = 'public-user'; // Public access için sabit userId
+    return this.contentAnalysisService.generateQuizQuestionsEnhanced(
       dto.text,
-      dto.numberOfQuestions,
+      dto.numberOfQuestions || 5,
+      userId,
+      dto.subject,
+      dto.gradeLevel,
+      dto.difficultyLevel,
+      dto.questionType,
+      dto.learningObjectives,
+      dto.keyTopics,
+      dto.language,
     );
   }
 
   @Post('analyze-workflow')
-  @Roles(UserRole.ADMIN, UserRole.TEACHER)
   @ApiOperation({ 
     summary: 'LangGraph workflow ile gelişmiş içerik analizi',
-    description: 'Sadece ADMIN ve TEACHER rolleri LangGraph workflow kullanarak kapsamlı içerik analizi yapabilir. Gemini 2.0 Flash modeli ile çoklu adımlı analiz sunar.'
+    description: 'Herkes tarafından erişilebilir. LangGraph workflow ve Gemini 2.0 Flash ile güçlendirilmiş içerik analizi.'
   })
   @ApiResponse({ status: 201, description: 'İçerik analizi başarıyla tamamlandı' })
-  @ApiResponse({ status: 401, description: 'Kimlik doğrulama gerekli - Bearer token eksik veya geçersiz.' })
-  @ApiResponse({ status: 403, description: 'Yetkisiz erişim - Sadece ADMIN ve TEACHER rolleri erişebilir.' })
-  @ApiBearerAuth()
-  async analyzeContentWithWorkflow(
+  @ApiResponse({ status: 400, description: 'Geçersiz istek verisi' })
+  @ApiResponse({ status: 500, description: 'Sunucu hatası' })
+  async analyzeContentWorkflow(
     @Body() dto: AnalyzeContentWorkflowDto,
-    @Req() req: Request,
   ) {
-    const user = req.user as Express.User;
-    const userId = user.id;
-    return this.contentAnalysisService.analyzeContentWithWorkflow(
+    const userId = 'public-user'; // Public access için sabit userId
+    return this.contentAnalysisService.analyzeContentWorkflowEnhanced(
       dto.text,
       userId,
-      dto.analysisType,
+      dto.analysisType?.toString(),
+      dto.subject,
+      dto.gradeLevel,
+      dto.learningObjectives,
+      dto.targetAudience,
+      dto.difficultyLevel,
+      dto.keyTopics,
+      dto.analysisDepth,
+      dto.includeRecommendations,
+      dto.language,
     );
   }
 }

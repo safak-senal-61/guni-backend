@@ -109,8 +109,8 @@ export declare class ParentPanelService {
         recentLessons: {
             id: string;
             lesson: {
-                title: string;
                 subject: string;
+                title: string;
                 difficulty: string;
             };
             progress: number;
@@ -121,8 +121,8 @@ export declare class ParentPanelService {
         recentQuizzes: {
             id: string;
             quiz: {
-                title: string;
                 subject: string;
+                title: string;
                 difficulty: string;
                 passingScore: number;
             };

@@ -1,5 +1,5 @@
 import { AuthService } from './auth.service';
-import { AuthDto, SignupDto, ForgotPasswordDto, ResetPasswordDto, ChangePasswordDto, VerifyEmailDto, ResendVerificationDto } from './auth.dto';
+import { AuthDto, SignupDto, ForgotPasswordDto, ResetPasswordDto, ChangePasswordDto, VerifyEmailDto, ResendVerificationDto, RefreshTokenDto } from './auth.dto';
 import { Request } from 'express';
 export declare class AuthController {
     private readonly authService;
@@ -13,15 +13,34 @@ export declare class AuthController {
         refreshToken: string;
     }>;
     logout(req: Request): Promise<void>;
-    refresh(req: Request): Promise<{
+    refresh(dto: RefreshTokenDto): Promise<{
         accessToken: string;
         refreshToken: string;
     }>;
-    me(req: Request): Express.User | undefined;
+    me(req: Request): Promise<{
+        email: string;
+        firstName: string;
+        lastName: string;
+        id: string;
+        role: import(".prisma/client").$Enums.UserRole;
+        isEmailVerified: boolean;
+        dateOfBirth: Date | null;
+        age: number | null;
+        gender: import(".prisma/client").$Enums.Gender | null;
+        gradeLevel: import(".prisma/client").$Enums.GradeLevel | null;
+        onboardingStatus: import(".prisma/client").$Enums.OnboardingStatus;
+        preferences: import("@prisma/client/runtime/library").JsonValue;
+        weakSubjects: string[];
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
     verifyEmail(dto: VerifyEmailDto): Promise<{
         message: string;
     }>;
     resendVerification(dto: ResendVerificationDto): Promise<{
+        message: string;
+    }>;
+    changePassword(req: Request, dto: ChangePasswordDto): Promise<{
         message: string;
     }>;
     forgotPassword(dto: ForgotPasswordDto): Promise<{
@@ -30,7 +49,11 @@ export declare class AuthController {
     resetPassword(dto: ResetPasswordDto): Promise<{
         message: string;
     }>;
-    changePassword(req: Request, dto: ChangePasswordDto): Promise<{
+    uploadProfilePicture(req: Request, file: Express.Multer.File): {
         message: string;
-    }>;
+        filePath: string;
+        fileName: string;
+        originalName: string;
+        size: number;
+    };
 }

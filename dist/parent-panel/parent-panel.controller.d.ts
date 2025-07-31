@@ -97,8 +97,8 @@ export declare class ParentPanelController {
         recentLessons: {
             id: string;
             lesson: {
-                title: string;
                 subject: string;
+                title: string;
                 difficulty: string;
             };
             progress: number;
@@ -109,8 +109,8 @@ export declare class ParentPanelController {
         recentQuizzes: {
             id: string;
             quiz: {
-                title: string;
                 subject: string;
+                title: string;
                 difficulty: string;
                 passingScore: number;
             };

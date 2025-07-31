@@ -23,3 +23,27 @@ export declare class VerifyEmailDto {
 export declare class ResendVerificationDto {
     email: string;
 }
+export declare class RefreshTokenDto {
+    refreshToken: string;
+}
+export declare class AuthResponseDto {
+    accessToken: string;
+    refreshToken: string;
+}
+export declare class UserProfileDto {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+    isEmailVerified: boolean;
+    dateOfBirth?: Date;
+    age?: number;
+    gender?: string;
+    gradeLevel?: string;
+    onboardingStatus: string;
+    preferences?: any;
+    weakSubjects: string[];
+    createdAt: Date;
+    updatedAt: Date;
+}

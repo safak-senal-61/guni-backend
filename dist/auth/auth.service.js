@@ -11,13 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_service_1 = require("../prisma/prisma.service");
-const argon = require("argon2");
-const library_1 = require("@prisma/client/runtime/library");
-const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
-const mail_service_1 = require("../mail/mail.service");
+const jwt_1 = require("@nestjs/jwt");
+const argon = require("argon2");
 const crypto = require("crypto");
+const library_1 = require("@prisma/client/runtime/library");
+const prisma_service_1 = require("../prisma/prisma.service");
+const mail_service_1 = require("../mail/mail.service");
 let AuthService = class AuthService {
     prisma;
     jwt;
@@ -45,7 +45,10 @@ let AuthService = class AuthService {
                 },
             });
             try {
-                await this.mailService.sendEmailVerification(user.email, emailVerificationToken, user.firstName);
+                await Promise.all([
+                    this.mailService.sendEmailVerification(user.email, emailVerificationToken, user.firstName),
+                    this.mailService.sendWelcomeEmail(user.email, user.firstName)
+                ]);
             }
             catch (emailError) {
                 console.warn('Email sending failed:', emailError.message);
@@ -75,6 +78,9 @@ let AuthService = class AuthService {
         const pwMatches = await argon.verify(user.password, dto.password);
         if (!pwMatches)
             throw new common_1.ForbiddenException('E-posta veya şifre hatalı');
+        if (!user.isEmailVerified) {
+            throw new common_1.UnauthorizedException('Hesabınızı kullanmadan önce e-posta adresinizi doğrulamanız gerekmektedir. Lütfen e-postanızı kontrol edin.');
+        }
         const tokens = await this.getTokens(user.id, user.email);
         await this.updateRefreshToken(user.id, tokens.refreshToken);
         return tokens;
@@ -97,6 +103,28 @@ let AuthService = class AuthService {
         const tokens = await this.getTokens(user.id, user.email);
         await this.updateRefreshToken(user.id, tokens.refreshToken);
         return tokens;
+    }
+    async refreshWithToken(refreshToken) {
+        try {
+            const payload = this.jwt.verify(refreshToken, {
+                secret: this.config.get('JWT_REFRESH_SECRET'),
+            });
+            const userId = payload.sub;
+            const user = await this.prisma.user.findUnique({ where: { id: userId } });
+            if (!user || !user.hashedRefreshToken) {
+                throw new common_1.UnauthorizedException('Geçersiz refresh token');
+            }
+            const refreshTokenMatches = await argon.verify(user.hashedRefreshToken, refreshToken);
+            if (!refreshTokenMatches) {
+                throw new common_1.UnauthorizedException('Geçersiz refresh token');
+            }
+            const tokens = await this.getTokens(user.id, user.email);
+            await this.updateRefreshToken(user.id, tokens.refreshToken);
+            return tokens;
+        }
+        catch (error) {
+            throw new common_1.UnauthorizedException('Geçersiz refresh token');
+        }
     }
     async updateRefreshToken(userId, refreshToken) {
         const hashedRefreshToken = await argon.hash(refreshToken);
@@ -206,33 +234,119 @@ let AuthService = class AuthService {
             message: 'Şifreniz başarıyla değiştirildi',
         };
     }
-    async changePassword(userId, dto) {
+    async changePassword(userId, oldPassword, newPassword) {
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
         });
         if (!user) {
             throw new common_1.NotFoundException('Kullanıcı bulunamadı');
         }
-        const currentPasswordMatches = await argon.verify(user.password, dto.currentPassword);
-        if (!currentPasswordMatches) {
-            throw new common_1.BadRequestException('Mevcut şifre hatalı');
+        const isOldPasswordValid = await argon.verify(user.password, oldPassword);
+        if (!isOldPasswordValid) {
+            throw new common_1.UnauthorizedException('Mevcut şifre yanlış');
         }
-        const hashedNewPassword = await argon.hash(dto.newPassword);
+        const hashedNewPassword = await argon.hash(newPassword);
         await this.prisma.user.update({
             where: { id: userId },
+            data: { password: hashedNewPassword },
+        });
+        try {
+            await this.mailService.sendPasswordChangeConfirmation(user.email, user.firstName);
+        }
+        catch (emailError) {
+            console.warn('Email sending failed:', emailError.message);
+        }
+        return { message: 'Şifre başarıyla değiştirildi' };
+    }
+    async requestPasswordReset(email) {
+        const user = await this.prisma.user.findUnique({
+            where: { email },
+        });
+        if (!user) {
+            return { message: 'Eğer bu e-posta adresine kayıtlı bir hesap varsa, şifre sıfırlama bağlantısı gönderildi.' };
+        }
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        await this.prisma.user.update({
+            where: { id: user.id },
             data: {
-                password: hashedNewPassword,
+                passwordResetToken: resetToken,
+                passwordResetExpires: resetTokenExpiry,
             },
         });
-        await this.mailService.sendPasswordChangeConfirmation(user.email, user.firstName);
-        return {
-            message: 'Şifreniz başarıyla değiştirildi',
-        };
+        try {
+            await this.mailService.sendPasswordResetEmail(user.email, resetToken, user.firstName);
+        }
+        catch (emailError) {
+            console.warn('Email sending failed:', emailError.message);
+        }
+        return { message: 'Eğer bu e-posta adresine kayıtlı bir hesap varsa, şifre sıfırlama bağlantısı gönderildi.' };
+    }
+    async resetPasswordWithToken(token, newPassword) {
+        const user = await this.prisma.user.findFirst({
+            where: {
+                passwordResetToken: token,
+                passwordResetExpires: {
+                    gt: new Date(),
+                },
+            },
+        });
+        if (!user) {
+            throw new common_1.BadRequestException('Geçersiz veya süresi dolmuş şifre sıfırlama token\'ı');
+        }
+        const hashedPassword = await argon.hash(newPassword);
+        await this.prisma.user.update({
+            where: { id: user.id },
+            data: {
+                password: hashedPassword,
+                passwordResetToken: null,
+                passwordResetExpires: null,
+            },
+        });
+        try {
+            await this.mailService.sendPasswordChangeConfirmation(user.email, user.firstName);
+        }
+        catch (emailError) {
+            console.warn('Email sending failed:', emailError.message);
+        }
+        return { message: 'Şifre başarıyla sıfırlandı' };
+    }
+    async getUserProfile(userId) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                role: true,
+                isEmailVerified: true,
+                dateOfBirth: true,
+                age: true,
+                gender: true,
+                gradeLevel: true,
+                onboardingStatus: true,
+                preferences: true,
+                weakSubjects: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+        });
+        if (!user) {
+            throw new common_1.NotFoundException('Kullanıcı bulunamadı');
+        }
+        return user;
     }
     async getTokens(userId, email) {
         const [accessToken, refreshToken] = await Promise.all([
-            this.jwt.signAsync({ sub: userId, email }, { secret: this.config.get('JWT_SECRET'), expiresIn: '15m' }),
-            this.jwt.signAsync({ sub: userId, email }, { secret: this.config.get('JWT_REFRESH_SECRET'), expiresIn: '7d' }),
+            this.jwt.signAsync({ sub: userId, email }, {
+                secret: this.config.get('JWT_SECRET'),
+                expiresIn: this.config.get('JWT_EXPIRES_IN') || '15m'
+            }),
+            this.jwt.signAsync({ sub: userId, email }, {
+                secret: this.config.get('JWT_REFRESH_SECRET'),
+                expiresIn: this.config.get('REFRESH_TOKEN_EXPIRES_IN') || '7d'
+            }),
         ]);
         return {
             accessToken,

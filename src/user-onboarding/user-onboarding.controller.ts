@@ -213,12 +213,7 @@ export class UserOnboardingController {
     description: 'Unauthorized - Invalid or missing authentication token',
   })
   async refreshRecommendations(@Request() req: any) {
-    const options: PersonalizedHomepageDto = {
-      lessonCount: 15,
-      includeQuizzes: true,
-      includeProgress: true,
-    };
-    return this.userOnboardingService.generatePersonalizedHomepage(req.user.sub, options);
+    return this.userOnboardingService.refreshRecommendations(req.user.sub);
   }
 
   @Get('analytics/weak-subjects')
@@ -236,14 +231,7 @@ export class UserOnboardingController {
     description: 'Unauthorized - Invalid or missing authentication token',
   })
   async getWeakSubjectsAnalysis(@Request() req: any) {
-    const homepage = await this.userOnboardingService.generatePersonalizedHomepage(
-      req.user.sub,
-      { lessonCount: 5, includeQuizzes: false, includeProgress: false }
-    );
-    return {
-      weakSubjectsAnalysis: homepage.weakSubjectsAnalysis,
-      aiRecommendations: homepage.personalizedContent,
-    };
+    return this.userOnboardingService.generateWeaknessAnalysis(req.user.sub);
   }
 
   @Get('parent-requests')

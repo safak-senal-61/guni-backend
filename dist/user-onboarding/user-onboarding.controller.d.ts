@@ -5,11 +5,11 @@ export declare class UserOnboardingController {
     constructor(userOnboardingService: UserOnboardingService);
     updateProfile(req: any, updateData: UpdateUserProfileDto): Promise<{
         user: {
+            id: string;
             email: string;
             password: string;
             firstName: string;
             lastName: string;
-            id: string;
             role: import(".prisma/client").$Enums.UserRole;
             isEmailVerified: boolean;
             emailVerificationToken: string | null;
@@ -44,41 +44,83 @@ export declare class UserOnboardingController {
     submitOnboardingQuiz(req: any, quizAnswers: SubmitOnboardingQuizDto): Promise<{
         analysis: any;
         weakSubjects: any;
+        strongSubjects: any;
         recommendations: any;
+        studyPlan: any;
+        personalizedContent: any;
+        overallScore: any;
+        subjectScores: any;
+        learningPath: any;
     }>;
     generatePersonalizedHomepage(req: any, options: PersonalizedHomepageDto): Promise<{
-        personalizedContent: any;
-        recommendedLessons: {
-            type: import(".prisma/client").$Enums.ContentType;
-            description: string | null;
+        welcomeMessage: string;
+        dailyGoals: {
             title: string;
             subject: string;
+            type: string;
+            estimatedTime: string;
+            priority: string;
+        }[];
+        weaknessAnalysis: {
+            criticalAreas: string[];
+            improvementPlan: string[];
+            targetScores: {
+                [x: string]: string;
+            };
+        };
+        strengthsHighlight: {
+            topSubjects: any;
+            achievements: string[];
+            encouragement: string;
+        };
+        studyRecommendations: {
+            title: string;
+            subject: string;
+            type: string;
+            difficulty: string;
+            reason: string;
+            estimatedTime: string;
+        }[];
+        progressTracking: {
+            overallProgress: string;
+            subjectProgress: any;
+            weeklyGoals: string[];
+            monthlyTargets: string[];
+        };
+        chatSuggestions: string[];
+    } | {
+        personalizedContent: any;
+        recommendedLessons: {
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            tags: string[];
-            content: import("@prisma/client/runtime/library").JsonValue | null;
-            duration: number | null;
-            difficulty: string;
+            title: string;
+            description: string | null;
+            subject: string;
             topic: string | null;
+            difficulty: string;
+            type: import(".prisma/client").$Enums.ContentType;
+            duration: number | null;
+            content: import("@prisma/client/runtime/library").JsonValue | null;
             thumbnail: string | null;
+            tags: string[];
             prerequisites: string[];
             learningObjectives: string[];
         }[];
         recommendedQuizzes: {
-            description: string | null;
-            title: string;
-            subject: string;
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            questions: import("@prisma/client/runtime/library").JsonValue;
-            difficulty: string;
+            title: string;
+            description: string | null;
+            subject: string;
             topic: string | null;
+            difficulty: string;
             lessonId: string | null;
             quizType: import(".prisma/client").$Enums.QuizType;
             questionCount: number;
             passingScore: number;
+            questions: import("@prisma/client/runtime/library").JsonValue;
         }[];
         progressAnalytics: {
             lessonsProgress: {
@@ -98,38 +140,74 @@ export declare class UserOnboardingController {
         };
     }>;
     getPersonalizedHomepage(req: any): Promise<{
-        personalizedContent: any;
-        recommendedLessons: {
-            type: import(".prisma/client").$Enums.ContentType;
-            description: string | null;
+        welcomeMessage: string;
+        dailyGoals: {
             title: string;
             subject: string;
+            type: string;
+            estimatedTime: string;
+            priority: string;
+        }[];
+        weaknessAnalysis: {
+            criticalAreas: string[];
+            improvementPlan: string[];
+            targetScores: {
+                [x: string]: string;
+            };
+        };
+        strengthsHighlight: {
+            topSubjects: any;
+            achievements: string[];
+            encouragement: string;
+        };
+        studyRecommendations: {
+            title: string;
+            subject: string;
+            type: string;
+            difficulty: string;
+            reason: string;
+            estimatedTime: string;
+        }[];
+        progressTracking: {
+            overallProgress: string;
+            subjectProgress: any;
+            weeklyGoals: string[];
+            monthlyTargets: string[];
+        };
+        chatSuggestions: string[];
+    } | {
+        personalizedContent: any;
+        recommendedLessons: {
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            tags: string[];
-            content: import("@prisma/client/runtime/library").JsonValue | null;
-            duration: number | null;
-            difficulty: string;
+            title: string;
+            description: string | null;
+            subject: string;
             topic: string | null;
+            difficulty: string;
+            type: import(".prisma/client").$Enums.ContentType;
+            duration: number | null;
+            content: import("@prisma/client/runtime/library").JsonValue | null;
             thumbnail: string | null;
+            tags: string[];
             prerequisites: string[];
             learningObjectives: string[];
         }[];
         recommendedQuizzes: {
-            description: string | null;
-            title: string;
-            subject: string;
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            questions: import("@prisma/client/runtime/library").JsonValue;
-            difficulty: string;
+            title: string;
+            description: string | null;
+            subject: string;
             topic: string | null;
+            difficulty: string;
             lessonId: string | null;
             quizType: import(".prisma/client").$Enums.QuizType;
             questionCount: number;
             passingScore: number;
+            questions: import("@prisma/client/runtime/library").JsonValue;
         }[];
         progressAnalytics: {
             lessonsProgress: {
@@ -162,11 +240,11 @@ export declare class UserOnboardingController {
             difficultyPreference: string | null;
             personalizedContent: import("@prisma/client/runtime/library").JsonValue | null;
         } | null;
+        id: string;
         email: string;
         password: string;
         firstName: string;
         lastName: string;
-        id: string;
         role: import(".prisma/client").$Enums.UserRole;
         isEmailVerified: boolean;
         emailVerificationToken: string | null;
@@ -184,96 +262,128 @@ export declare class UserOnboardingController {
         updatedAt: Date;
     }>;
     refreshRecommendations(req: any): Promise<{
-        personalizedContent: any;
-        recommendedLessons: {
-            type: import(".prisma/client").$Enums.ContentType;
-            description: string | null;
-            title: string;
-            subject: string;
+        aiRecommendations: any;
+        refreshedAt: Date;
+        personalizedLessons: {
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            tags: string[];
-            content: import("@prisma/client/runtime/library").JsonValue | null;
-            duration: number | null;
-            difficulty: string;
+            title: string;
+            description: string | null;
+            subject: string;
             topic: string | null;
+            difficulty: string;
+            type: import(".prisma/client").$Enums.ContentType;
+            duration: number | null;
+            content: import("@prisma/client/runtime/library").JsonValue | null;
             thumbnail: string | null;
+            tags: string[];
             prerequisites: string[];
             learningObjectives: string[];
         }[];
-        recommendedQuizzes: {
-            description: string | null;
-            title: string;
-            subject: string;
+        personalizedQuizzes: {
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            questions: import("@prisma/client/runtime/library").JsonValue;
-            difficulty: string;
+            title: string;
+            description: string | null;
+            subject: string;
             topic: string | null;
+            difficulty: string;
             lessonId: string | null;
             quizType: import(".prisma/client").$Enums.QuizType;
             questionCount: number;
             passingScore: number;
+            questions: import("@prisma/client/runtime/library").JsonValue;
         }[];
-        progressAnalytics: {
-            lessonsProgress: {
-                completed: number;
-                total: number;
-                percentage: number;
-            };
-            quizzesProgress: {
-                taken: number;
-                total: number;
-                averageScore: number;
-            };
-        } | null;
-        weakSubjectsAnalysis: {
-            subjects: string[];
-            recommendations: any;
+        studyPlan: {
+            dailyGoals: string[];
+            weeklyTargets: string[];
+            prioritySubjects: string[];
         };
     }>;
     getWeakSubjectsAnalysis(req: any): Promise<{
-        weakSubjectsAnalysis: {
+        criticalWeaknesses: {
             subjects: string[];
-            recommendations: any;
+            scores: {
+                Matematik: number;
+                'Fen Bilimleri': number;
+            };
+            priorityLevel: string;
         };
-        aiRecommendations: any;
+        improvementAreas: {
+            conceptualGaps: string[];
+            skillDeficits: string[];
+            studyHabits: string[];
+        };
+        actionPlan: {
+            immediate: string[];
+            shortTerm: string[];
+            longTerm: string[];
+        };
+    } | {
+        aiAnalysis: any;
+        criticalWeaknesses: {
+            subjects: string[];
+            scores: any;
+            priorityLevel: string;
+        };
+        improvementAreas: {
+            conceptualGaps: string[];
+            skillDeficits: string[];
+            studyHabits: string[];
+        };
+        actionPlan: {
+            immediate: string[];
+            shortTerm: string[];
+            longTerm: string[];
+        };
+        targetMetrics: {
+            weeklyGoals: {
+                studyHours: number;
+                quizzesCompleted: number;
+                improvementPercentage: number;
+            };
+            monthlyTargets: {
+                overallScore: number;
+                weakestSubjectScore: number;
+                consistencyRate: number;
+            };
+        };
     }>;
     getParentRequests(req: any): Promise<({
         parent: {
+            id: string;
             email: string;
             firstName: string;
             lastName: string;
-            id: string;
         };
     } & {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        inviteCode: string | null;
+        parentId: string;
         studentId: string;
         connectionStatus: string;
-        parentId: string;
+        inviteCode: string | null;
         requestedAt: Date;
         approvedAt: Date | null;
     })[]>;
     approveParentRequest(req: any, connectionId: string): Promise<{
         parent: {
+            id: string;
             email: string;
             firstName: string;
             lastName: string;
-            id: string;
         };
     } & {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        inviteCode: string | null;
+        parentId: string;
         studentId: string;
         connectionStatus: string;
-        parentId: string;
+        inviteCode: string | null;
         requestedAt: Date;
         approvedAt: Date | null;
     }>;
@@ -282,19 +392,19 @@ export declare class UserOnboardingController {
     }>;
     getConnectedParents(req: any): Promise<({
         parent: {
+            id: string;
             email: string;
             firstName: string;
             lastName: string;
-            id: string;
         };
     } & {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        inviteCode: string | null;
+        parentId: string;
         studentId: string;
         connectionStatus: string;
-        parentId: string;
+        inviteCode: string | null;
         requestedAt: Date;
         approvedAt: Date | null;
     })[]>;

@@ -38,10 +38,10 @@ export declare class AnalyticsService {
                 progress: number;
             };
         } & {
+            subject: string;
             type: import(".prisma/client").$Enums.ContentType;
             description: string | null;
             title: string;
-            subject: string;
             id: string;
             createdAt: Date;
             updatedAt: Date;
@@ -49,10 +49,10 @@ export declare class AnalyticsService {
             content: import("@prisma/client/runtime/library").JsonValue | null;
             duration: number | null;
             difficulty: string;
+            learningObjectives: string[];
             topic: string | null;
             thumbnail: string | null;
             prerequisites: string[];
-            learningObjectives: string[];
         })[];
         difficultQuizzes: {
             id: string;

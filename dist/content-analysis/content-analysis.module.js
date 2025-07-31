@@ -18,7 +18,8 @@ exports.ContentAnalysisModule = ContentAnalysisModule = __decorate([
     (0, common_1.Module)({
         imports: [prisma_module_1.PrismaModule],
         providers: [content_analysis_service_1.ContentAnalysisService],
-        controllers: [content_analysis_controller_1.ContentAnalysisController]
+        controllers: [content_analysis_controller_1.ContentAnalysisController],
+        exports: [content_analysis_service_1.ContentAnalysisService]
     })
 ], ContentAnalysisModule);
 //# sourceMappingURL=content-analysis.module.js.map

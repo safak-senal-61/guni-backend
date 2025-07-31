@@ -4,10 +4,10 @@ export declare class LessonsService {
     private prisma;
     constructor(prisma: PrismaService);
     create(data: CreateLessonDto): Promise<{
+        subject: string;
         type: import(".prisma/client").$Enums.ContentType;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -15,16 +15,16 @@ export declare class LessonsService {
         content: import("@prisma/client/runtime/library").JsonValue | null;
         duration: number | null;
         difficulty: string;
+        learningObjectives: string[];
         topic: string | null;
         thumbnail: string | null;
         prerequisites: string[];
-        learningObjectives: string[];
     }>;
     findAll(): Promise<{
+        subject: string;
         type: import(".prisma/client").$Enums.ContentType;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -32,16 +32,16 @@ export declare class LessonsService {
         content: import("@prisma/client/runtime/library").JsonValue | null;
         duration: number | null;
         difficulty: string;
+        learningObjectives: string[];
         topic: string | null;
         thumbnail: string | null;
         prerequisites: string[];
-        learningObjectives: string[];
     }[]>;
     findOne(id: string): Promise<{
+        subject: string;
         type: import(".prisma/client").$Enums.ContentType;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -49,16 +49,16 @@ export declare class LessonsService {
         content: import("@prisma/client/runtime/library").JsonValue | null;
         duration: number | null;
         difficulty: string;
+        learningObjectives: string[];
         topic: string | null;
         thumbnail: string | null;
         prerequisites: string[];
-        learningObjectives: string[];
     } | null>;
     update(id: string, data: UpdateLessonDto): Promise<{
+        subject: string;
         type: import(".prisma/client").$Enums.ContentType;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -66,16 +66,16 @@ export declare class LessonsService {
         content: import("@prisma/client/runtime/library").JsonValue | null;
         duration: number | null;
         difficulty: string;
+        learningObjectives: string[];
         topic: string | null;
         thumbnail: string | null;
         prerequisites: string[];
-        learningObjectives: string[];
     }>;
     remove(id: string): Promise<{
+        subject: string;
         type: import(".prisma/client").$Enums.ContentType;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -83,9 +83,9 @@ export declare class LessonsService {
         content: import("@prisma/client/runtime/library").JsonValue | null;
         duration: number | null;
         difficulty: string;
+        learningObjectives: string[];
         topic: string | null;
         thumbnail: string | null;
         prerequisites: string[];
-        learningObjectives: string[];
     }>;
 }

@@ -36,10 +36,10 @@ export declare class StudentPanelService {
             };
             recentLessons: ({
                 lesson: {
+                    subject: string;
                     type: import(".prisma/client").$Enums.ContentType;
                     description: string | null;
                     title: string;
-                    subject: string;
                     id: string;
                     createdAt: Date;
                     updatedAt: Date;
@@ -47,10 +47,10 @@ export declare class StudentPanelService {
                     content: import("@prisma/client/runtime/library").JsonValue | null;
                     duration: number | null;
                     difficulty: string;
+                    learningObjectives: string[];
                     topic: string | null;
                     thumbnail: string | null;
                     prerequisites: string[];
-                    learningObjectives: string[];
                 };
             } & {
                 id: string;
@@ -140,10 +140,10 @@ export declare class StudentPanelService {
         };
         recentLessons: ({
             lesson: {
+                subject: string;
                 type: import(".prisma/client").$Enums.ContentType;
                 description: string | null;
                 title: string;
-                subject: string;
                 id: string;
                 createdAt: Date;
                 updatedAt: Date;
@@ -151,10 +151,10 @@ export declare class StudentPanelService {
                 content: import("@prisma/client/runtime/library").JsonValue | null;
                 duration: number | null;
                 difficulty: string;
+                learningObjectives: string[];
                 topic: string | null;
                 thumbnail: string | null;
                 prerequisites: string[];
-                learningObjectives: string[];
             };
         } & {
             id: string;
@@ -198,10 +198,10 @@ export declare class StudentPanelService {
     private getStudyStreak;
     private getWeeklyProgress;
     getUpcomingLessons(userId: string, limit?: number): Promise<{
+        subject: string;
         type: import(".prisma/client").$Enums.ContentType;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -209,15 +209,15 @@ export declare class StudentPanelService {
         content: import("@prisma/client/runtime/library").JsonValue | null;
         duration: number | null;
         difficulty: string;
+        learningObjectives: string[];
         topic: string | null;
         thumbnail: string | null;
         prerequisites: string[];
-        learningObjectives: string[];
     }[]>;
     getRecommendedQuizzes(userId: string, limit?: number): Promise<{
+        subject: string;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;

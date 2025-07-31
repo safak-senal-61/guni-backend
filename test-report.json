@@ -1,0 +1,12 @@
+{
+  "timestamp": "2025-07-29T20:08:28.173Z",
+  "totalTests": 4,
+  "passedTests": 1,
+  "successRate": 25,
+  "results": {
+    "mathQuizGeneration": false,
+    "contentAnalysis": false,
+    "contentSummarization": false,
+    "fileUploadSummarization": true
+  }
+}

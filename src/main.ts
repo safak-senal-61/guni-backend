@@ -100,6 +100,18 @@ async function bootstrap() {
   
   // Setup Swagger UI with custom options
   SwaggerModule.setup('api', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+      displayRequestDuration: true,
+      docExpansion: 'none',
+      filter: true,
+      showRequestHeaders: true,
+      tryItOutEnabled: true,
+      showExtensions: true,
+      showCommonExtensions: true,
+      defaultModelsExpandDepth: 2,
+      defaultModelExpandDepth: 2,
+    },
     customSiteTitle: '🎓 GÜNÜBİRLİK DOZ API Dokümantasyonu',
     customfavIcon: 'https://nestjs.com/img/logo-small.svg',
     customCss: `
@@ -116,16 +128,6 @@ async function bootstrap() {
       .swagger-ui .opblock.opblock-put { border-color: #ff9800; }
       .swagger-ui .opblock.opblock-delete { border-color: #f44336; }
     `,
-    swaggerOptions: {
-      persistAuthorization: true,
-      displayRequestDuration: true,
-      filter: true,
-      showExtensions: true,
-      showCommonExtensions: true,
-      docExpansion: 'none',
-      defaultModelsExpandDepth: 2,
-      defaultModelExpandDepth: 2,
-    },
   });
 
   // Add JSON download endpoint

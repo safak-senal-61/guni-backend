@@ -4,9 +4,9 @@ export declare class QuizzesService {
     private prisma;
     constructor(prisma: PrismaService);
     create(data: CreateQuizDto): Promise<{
+        subject: string;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -19,9 +19,9 @@ export declare class QuizzesService {
         passingScore: number;
     }>;
     findAll(): Promise<{
+        subject: string;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -34,9 +34,9 @@ export declare class QuizzesService {
         passingScore: number;
     }[]>;
     findOne(id: string): Promise<{
+        subject: string;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -49,9 +49,9 @@ export declare class QuizzesService {
         passingScore: number;
     } | null>;
     update(id: string, data: UpdateQuizDto): Promise<{
+        subject: string;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -64,9 +64,9 @@ export declare class QuizzesService {
         passingScore: number;
     }>;
     remove(id: string): Promise<{
+        subject: string;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;

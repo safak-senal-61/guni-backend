@@ -4,9 +4,9 @@ export declare class QuizzesController {
     private readonly quizzesService;
     constructor(quizzesService: QuizzesService);
     create(createQuizDto: CreateQuizDto): Promise<{
+        subject: string;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -19,9 +19,9 @@ export declare class QuizzesController {
         passingScore: number;
     }>;
     findAll(): Promise<{
+        subject: string;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -34,9 +34,9 @@ export declare class QuizzesController {
         passingScore: number;
     }[]>;
     findOne(id: string): Promise<{
+        subject: string;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -49,9 +49,9 @@ export declare class QuizzesController {
         passingScore: number;
     } | null>;
     update(id: string, updateQuizDto: UpdateQuizDto): Promise<{
+        subject: string;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -64,9 +64,9 @@ export declare class QuizzesController {
         passingScore: number;
     }>;
     remove(id: string): Promise<{
+        subject: string;
         description: string | null;
         title: string;
-        subject: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
